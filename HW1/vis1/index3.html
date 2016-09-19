@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+svg {
+  font: 10px sans-serif;
+}
+
+</style>
+<body>
+    
+    <script src="//d3js.org/d3.v3.min.js"></script>
+    
+    <script> 
+        var margin = {top: 20, right: 150, bottom: 30, left: 150},
+            width = 1440 - margin.left - margin.right,
+            height = 1000 - margin.top - margin.bottom;
+        
+        d3.csv("2385_data2ehrSample.csv", function(data) { 
+            var uniqueProvider = [];
+            var uniqueAgeGroup = [];
+            for (var i = 0, len = data.length; i < len; i++) {
+                if (!uniqueProvider.includes(data[i].Provider_Specialty)) {
+                    uniqueProvider.push(data[i].Provider_Specialty);
+                }
+                if (!uniqueAgeGroup.includes(data[i]["Age_Group"])) {
+                    uniqueAgeGroup.push(data[i]["Age_Group"]);
+                }
+            }
+            var y1 = d3.scale.ordinal().domain(uniqueProvider).rangePoints([height, 0]);
+            var y2 = d3.scale.ordinal().domain(uniqueAgeGroup).rangePoints([height, 0]);
+            
+            /*x.domain(d3.extent(data, function(d) { return parseTime(d["Date of Injury"])}));
+                
+            y.domain(d3.extent(data, function(d) { return d.Age}));*/
+            
+            var yAxis1 = d3.svg.axis()
+                        .scale(y1).orient("left");
+            
+            var yAxis2 = d3.svg.axis()
+                        .scale(y2).orient("right");
+            
+//            var valueLine = d3.svg.line()
+//                        .x(0)
+//                        .y(function(d) {
+//                            console.log(y2(d.Provider_Specialty));
+//                            return y2(d.Provider_Specialty);
+//                        });
+//            
+//            var valueLine2 = d3.svg.line()
+//                        .x(width)
+//                        .y(function(d) {
+//                            return y2(d.Age_Group);
+//                        });
+            var svg = d3.select("body")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            svg.selectAll(".line")
+                .data(data)
+                .enter()
+                .append("line")
+                .attr("class", "line")
+                .attr("x1", 0)
+                .attr("x2", width)
+                .attr("y1", function(d){
+                    return y1(d.Provider_Specialty);
+                })
+                .attr("y2", function(d){
+                    return y2(d.Age_Group);
+                })
+                .attr("stroke","#000");
+            
+            svg.append("g")
+            //.attr("transform", "translate("+padding+",0)")
+            .attr("class", "yaxis1")
+            .call(yAxis1);
+            
+            svg.append("g")
+            //.attr("transform", "translate("+padding+",0)")
+            .attr("class", "yaxis")
+            .attr("transform", "translate("+width+",0)")
+            .call(yAxis2);
+            
+        });
+    </script>
+</body>
