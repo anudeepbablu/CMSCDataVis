@@ -6,10 +6,15 @@ svg {
   font: 10px sans-serif;
 }
 
+.legend {
+    padding-bottom: 5px;
+}
+
+
 </style>
 <body>
     
-    <script src="//d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
     
     <script> 
         var margin = {top: 20, right: 150, bottom: 30, left: 150},
@@ -71,7 +76,12 @@ svg {
                 .attr("y2", function(d){
                     return y2(d.Age_Group);
                 })
-                .attr("stroke","#000");
+                .attr("stroke",function (d) {
+                
+                var colors_g=["#3366cc","#dc3912","#ff9900","#109618","#990099","#0099c6","#dd4477","#66aa00"];
+                
+                return colors_g[uniqueAgeGroup.indexOf(d.Age_Group)]
+            });
             
             svg.append("g")
             //.attr("transform", "translate("+padding+",0)")
@@ -84,6 +94,43 @@ svg {
             .attr("transform", "translate("+width+",0)")
             .call(yAxis2);
             
+            
+            var color=["#3366cc","#dc3912","#ff9900","#109618","#990099","#0099c6"];
+            var legendRectSize = 30;
+            var legendSpacing = 5;
+            var legend = d3.select('svg')
+                    .append("g")
+                    .selectAll("g")
+                    .data(color)
+                    .enter()
+                    .append('g')
+                    .attr('class', 'legend')
+                    .attr('transform', function(d, i) {
+                        var heightR = legendRectSize;
+                        var x = 1400;
+                        var y = 100 + i * heightR;
+                        return 'translate(' + x + ',' + y + ')';
+                    });
+                
+                legend.append('rect')
+                        .attr('width', legendRectSize)
+                        .attr('height', legendRectSize)
+                        .style('fill', function (d) {
+                            return d;
+                        })
+                        .style('stroke', "#000");
+ 
+                legend.append('text')
+                        .attr('x', 0)
+                        .attr('y', 0)
+                        .style("font-size", "15px")
+                        .style("text-anchor", "end")
+                        .attr('transform', 'translate(' + 1 + ',' + 15 + ')')
+                        .text(function(d, i) {
+                            var groupSize = ["65 and over", "15 to 17", "5 to 14", "18 to 24", "25 to 34", "45 to 64", "0 to 4"]
+                            return groupSize[color.indexOf(d)]; });
+            
         });
     </script>
+    
 </body>

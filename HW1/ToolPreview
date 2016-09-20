@@ -1,0 +1,30 @@
+
+Toolkit Review:
+
+D3.js:
+
+Name : Data Driven Documents.
+Description :  It is a Web based Visualization tool(or framework) written on top of JavaScript. 
+Capabilities : Can be used to Visualize in 2D, web based visualizations. Can read JSON, CSV etc.
+Data Types : Strings, numbers, boolean
+Visualization types : 2D, bar graphs, charts, tree maps
+APIs supported : All types of modern databases can be connected through scripts like php
+Customization : D3 is some set of functions. So your creativity is the limit to the possibilities.
+
+My Points & Experience: 
+
+		I started by reading online tutorials about how to use Tableau. D3.js is based on JavaScript which makes it great tool to use in Web Development and Web based research projects. Most of the browers support D3, this makes it platform independent. D3 doesn't support 3D visualization. It can be integrated with Front End technologies like AngularJS and ReactJS.
+
+Tableau:
+
+Name : Tableau
+Description :  Standalone application which can be used in desktop or online.
+Capabilities : Can be used to create many standard visulizations like tree maps, bar graphs etc
+Data Types : Strings, Numbers, Boolean
+Visualization types : It supports both 2D and 3D visulizations which is a great advantage over D3.
+APIs supported : Databases like mySQL, Oracle can be connected. Supports text, csv, excel, json and many other file formats.
+Customization : Customization beyond standard available visulizations makes things complex. But it is always possible to create visulizations we want with some work.
+
+My Points & Experience:
+
+		I started by reading online tutorials about how to use Tableau. Unlike D3.js it is a complete tool which can be used as a stand alone application in local desktop and also in cloud. Tabluea have different extensions like Tableau Workbook(.twb), Tableau Packaged Workbook(.twbx), Tableau Datasource(.tds) etc. There is extensive support to create and heavy visulizations involving multiple variables. Can be connected to servers like Oracle, MySQL, RedShift which makes it great tool to use in teams working with pre-exiting data. On the flip, we need to download workbooks and open them using only Tableau. This makes Tableau less flexible to use.
