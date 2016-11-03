@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<title>HomeWork4</title>
+
+</head>
+
+<body>
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+	<script>
+		var w = window.innerWidth;
+		var h = window.innerHeight;
+		var margin = {top: 20, right: 150, bottom: 80, left: 150},
+			width = w - margin.right - margin.left,
+			height = h - margin.top - margin.bottom;
+		
+		var color = d3.scale.category20c();
+		var diseases = 
+		["Stress", "PTSD", "Speech", "Anxiety", "Depression", "Headache", "Sleep", "Audiology", "Vision", "Neurologic", "Alzheimer", "Cognitive", "PCS", "Endocrine", "Skull_inj", "NON_skull_inj"];
+		var disease_color = {}
+		for (var j = 0; j < diseases.length; j++) {
+			disease_color[diseases[j]] = String(color(j));
+		}
+		
+		console.log(diseases.length);
+		d3.csv("data2ehrSample.csv", function(data) {
+			data.forEach(function(d) {
+				d.PatientID =+ d.PatientID;
+				d.Age =+ d.Age;
+				d.Age_TBI =+ d.Age_TBI;
+				d.Days_From1stTBI =+ d.Days_From1stTBI;
+				//d.date = Date.parse(d.date);
+				d.EncounterID =+ d.EncounterID;
+				//d.Encounter_date = Date.parse(d.Encounter_date);
+				d.PRE_max_days =+ d.PRE_max_days;
+				d.POST_max_days =+ d.POST_max_days;
+				d.Stress =+ d.Stress;
+				d.PTSD =+ d.PTSD;
+				d.Speech =+ d.Speech;
+				d.Anxiety =+ d.Anxiety;
+				d.Depression =+ d.Depression;
+				d.Headache =+ d.Headache;
+				d.Sleep =+ d.Sleep;
+				d.Audiology =+ d.Audiology;
+				d.Vision =+ d.Vision;
+				d.Neurologic =+ d.Neurologic;
+				d.Alzheimer =+ d.Alzheimer;
+				d.Cognitive =+ d.Cognitive;
+				d["PCS"] =+ d["PCS"]
+				d["Endocrine"] =+ d["Endocrine"]
+				d.Skull_inj =+ d.Skull_inj;
+				d.NON_skull_inj =+ d.NON_skull_inj;
+ 			});
+
+	 		var PatientIDs = new Array();
+	 		var Days_From1stTBI = new Array();
+	 		var summary_encounter = {}
+	 		var Patient_Encounter = {}
+	 		var Patient_Color_xy = {}
+	 		for (var i = data.length - 2; i >= 1; i--) {
+	 			if (!PatientIDs.includes(data[i].PatientID)) {
+
+					PatientIDs.push(data[i].PatientID);
+					summary_encounter[data[i].PatientID] = [0, 0, 0];
+					Patient_Encounter[data[i].PatientID] = [];
+					Patient_Color_xy[data[i].PatientID] = [];
+				};
+				if (data[i].Days_From1stTBI > 0) {
+					summary_encounter[data[i].PatientID][0] += 1;
+					summary_encounter[data[i].PatientID][2] += 1;
+					Patient_Encounter[data[i].PatientID].push(Number(data[i].Days_From1stTBI)); 
+				}
+				else {
+					summary_encounter[data[i].PatientID][1] += 1;	
+					summary_encounter[data[i].PatientID][2] += 1;
+					Patient_Encounter[data[i].PatientID].push(Number(data[i].Days_From1stTBI));
+				}
+				Days_From1stTBI.push(data[i].Days_From1stTBI);
+			};
+			
+			function sortNumber(a,b) {
+    			return a - b;
+			}
+			for (var i = 0; i < PatientIDs.length; i++) {
+				Patient_Encounter[PatientIDs[i]]=Patient_Encounter[PatientIDs[i]].sort(sortNumber);
+			};
+			var count = [0, []];
+			var minDays_From1stTBI =  Math.min.apply(Math, Days_From1stTBI);
+			var maxDays_From1stTBI =  Math.max.apply(Math, Days_From1stTBI);
+			var maxSummaryLeft = -Infinity, maxSummaryRight = -Infinity, x;
+			
+			for( x in summary_encounter) {
+			    if( summary_encounter[x][1] > maxSummaryRight) maxSummaryRight = summary_encounter[x][1];
+			    if( summary_encounter[x][0] > maxSummaryLeft) maxSummaryLeft = summary_encounter[x][0];
+			}
+
+			for (var i = 0; i < data.length; i++) {
+				for (var p = 0; p < diseases.length; p++) {
+					if (data[i][diseases[p]]) {
+						count[0]++;
+						count[1].push(diseases[p]);
+					}
+				}
+				
+				r = 0;
+				t = (height/PatientIDs.length)/count[0];
+				while (r < count[0]) {
+					Patient_Color_xy[data[i].PatientID].push([
+							(width*3/(maxSummaryLeft+maxSummaryRight))*Patient_Encounter[data[i].PatientID].indexOf(data[i].Days_From1stTBI),
+							PatientIDs.indexOf(data[i].PatientID)+(r+1),
+							disease_color[count[1][r]]
+						]);
+					r++;
+				}
+				count = [0,[]];
+			}
+			
+
+			//var minEncounters
+			var svg = d3.select("body")
+	                    .append("svg")
+	                    .attr("width", width*3+margin.left+margin.right)
+	                    .attr("height", height+margin.top+margin.bottom)
+	                    .append("g")
+	                    .attr("class", "gbody")
+	                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+			var yScale = d3.scale.ordinal()
+								.domain(PatientIDs)
+								.rangePoints([height, 0]);
+			var xScale = d3.scale.linear()
+								.domain([0, maxSummaryLeft + maxSummaryRight])
+								.range([0, width]);
+
+			var yAxis = d3.svg.axis().scale(yScale).orient("left");
+			var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+			/*svg.append("g").attr("class", "x axis")
+							.attr("transform", "translate("+0+","+height+")")
+							.attr("stroke-width", "1")
+							.call(xAxis);*/
+			svg.append("g").attr("class", "y axis")
+							.attr("stroke-width", "1")
+							.call(yAxis);
+			var centerCal = width * (-minDays_From1stTBI)/(maxDays_From1stTBI - minDays_From1stTBI);
+			/*svg.append("g").attr("class", "centeraxis")
+							.attr("transform", "translate("+centerCal+","+0+")")
+							.call(yAxis);*/
+
+			//draw squares
+			/*var square_grid_data = []
+			for (var i = 0; i <= maxDays_From1stTBI-minDays_From1stTBI; i++)
+				for (var j = 0; j <= (height+margin.top+margin.bottom)/PatientIDs.length; j++) {
+					square_grid_data[i] = [minDays_From1stTBI+j, 0];	
+				};
+				
+			};*/
+			function cal0(Patient_Color_xy, ind) {
+				var arr = []
+				for (var k = 0; k < PatientIDs.length; k++) {
+					for (var i = 0; i < Patient_Color_xy[PatientIDs[k]].length; i++ ) {
+						arr.push(Patient_Color_xy[PatientIDs[k]][i][ind]);
+					}
+				}
+				return arr;
+			}
+		
+			var xMap = cal0(Patient_Color_xy, 0);
+			var yMap = cal0(Patient_Color_xy, 1);
+			var colorMap = cal0(Patient_Color_xy, 2);
+			for (var k = 0; k < PatientIDs.length; k++) {
+
+				svg.append("line")
+					.attr("class", "grid")
+					.style("stroke", "black")
+					.attr("x1", 0)
+					.attr("y1", yScale(PatientIDs[k]) - 10)
+					.attr("x2", width*3)
+					.attr("y2", yScale(PatientIDs[k]) - 10);
+
+			}
+
+			svg.append("line")
+					.attr("class", "grid")
+					.style("stroke", "black")
+					.attr("x1", 0)
+					.attr("y1", height + 10)
+					.attr("x2", width*3)
+					.attr("y2", height + 10);
+
+			for (var i = 0; i <= maxSummaryRight+maxSummaryLeft; i++) {
+				svg.append("line")
+					.attr("class", "grid")
+					.style("stroke", "black")
+					.attr("x1", (width*i/(maxSummaryRight+maxSummaryLeft))*3)
+					.attr("y1", -10)
+					.attr("x2", (width*i/(maxSummaryRight+maxSummaryLeft))*3)
+					.attr("y2", height+10);
+
+
+			};
+			console.log(Patient_Color_xy);
+			for (var k = 0; k < PatientIDs.length; k++) {
+					for (var i = 0; i < Patient_Color_xy[PatientIDs[k]].length; i++ ) {
+						svg
+						// .data(Patient_Color_xy[PatientIDs[k]][i])
+						
+						.append("rect")
+						.attr("class", "color_grid")
+						//.attr("x", 6)
+						//.attr("y", 6)
+						.attr("x", Patient_Color_xy[PatientIDs[k]][i][0])
+						
+						.attr("y", yScale(PatientIDs[k]) - 10)
+						.attr("width", width*3/(maxSummaryRight+maxSummaryLeft))
+						.attr("height", 20)
+						.attr("style", "green")
+						.style("fill", Patient_Color_xy[PatientIDs[k]][i][2]);
+					}
+				}
+			var encounters = ["Stress","PTSD","Speech","Anxiety","Depression","Headache","Sleep","Audiology","Vision","Neurologic","Alzheimer","Cognitive","PCS","Endocrine","Skull_inj","NON_skull_inj"];
+	        var encounterLegends = d3.select(".legends.primary .legendsBody")
+	            .selectAll(".legendCell")
+	            .data(encounters);
+	        
+	        encounterLegends.enter()
+	            .append("div")
+	            .attr("class", function(d){
+	                return "legendCell " + d;
+	            })
+	            .each(function(d){
+	                var parent = d3.select("body");
+
+	                parent.append("div")
+	                    .attr("class", "colorTile cell " + d)
+	                    .style("background", color(d));
+
+	                parent.append("div")
+	                    .attr("class", "legendText")
+	                    .text(d);
+	            });
+		});
+	</script>
+</body>
+</html>
