@@ -17,44 +17,144 @@
 			height = h - margin.top - margin.bottom;
 		
 		var color = d3.scale.category20c();
-		var diseases = 
-		["Stress", "PTSD", "Speech", "Anxiety", "Depression", "Headache", "Sleep", "Audiology", "Vision", "Neurologic", "Alzheimer", "Cognitive", "PCS", "Endocrine", "Skull_inj", "NON_skull_inj"];
-		var disease_color = {}
-		for (var j = 0; j < diseases.length; j++) {
-			disease_color[diseases[j]] = String(color(j));
-		}
 		
-		console.log(diseases.length);
-		d3.csv("data2ehrSample.csv", function(data) {
-			data.forEach(function(d) {
-				d.PatientID =+ d.PatientID;
-				d.Age =+ d.Age;
-				d.Age_TBI =+ d.Age_TBI;
-				d.Days_From1stTBI =+ d.Days_From1stTBI;
-				//d.date = Date.parse(d.date);
-				d.EncounterID =+ d.EncounterID;
-				//d.Encounter_date = Date.parse(d.Encounter_date);
-				d.PRE_max_days =+ d.PRE_max_days;
-				d.POST_max_days =+ d.POST_max_days;
-				d.Stress =+ d.Stress;
-				d.PTSD =+ d.PTSD;
-				d.Speech =+ d.Speech;
-				d.Anxiety =+ d.Anxiety;
-				d.Depression =+ d.Depression;
-				d.Headache =+ d.Headache;
-				d.Sleep =+ d.Sleep;
-				d.Audiology =+ d.Audiology;
-				d.Vision =+ d.Vision;
-				d.Neurologic =+ d.Neurologic;
-				d.Alzheimer =+ d.Alzheimer;
-				d.Cognitive =+ d.Cognitive;
-				d["PCS"] =+ d["PCS"]
-				d["Endocrine"] =+ d["Endocrine"]
-				d.Skull_inj =+ d.Skull_inj;
-				d.NON_skull_inj =+ d.NON_skull_inj;
- 			});
+		var svg = d3.select("body").append("svg")
+					    .attr("width", width + margin.left + margin.right)
+    					.attr("height", height + margin.top + margin.bottom)
+  						.append("g")
+    					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-	 		var PatientIDs = new Array();
+		d3.csv("MFI_data.csv", function(data) {
+			d3.csv("2015MFI_Data.csv", function(data2015) {
+				
+				data.forEach(function(d) {
+					d.Eotaxin =+ d.Eotaxin;
+					d["G.CSF"] =+ d["G.CSF"];
+					d["GM.CSF"] =+ d["GM.CSF"];
+					d["IL.1a"] =+ d["IL.1a"];
+					d["IL.1b"] =+ d["IL.1b"];
+					d["IL.2"] =+ d["IL.2"];
+					d["IL.3"] =+ d["IL.2"];
+					d["IL.4"] =+ d["IL.4"];					
+					d["IL.5"] =+ d["IL.5"];
+					d["IL.6"] =+ d["IL.6"];
+					d["IL.7"] =+ d["IL.7"];
+					d["IL.9"] =+ d["IL.9"];
+					d["IL.10"] =+ d["IL.10"];
+					d["IL.12p40"] =+ d["IL.12p40"];
+					d["IL.12p70"] =+ d["IL.12p70"];	
+					d["IL.13"] =+ d["IL.13"];
+					d["IL.15"] =+ d["IL.15"];				
+					d["IL.17"] =+ d["IL.17"];
+					d.INFg =+ d.INFg;
+					d["IL.13"] =+ d["IL.13"];
+					d.KC =+ d.KC;
+					d.LIF =+ d.LIF;
+					d["M.CSF"] =+ d["M.CSF"];
+					d["MCP.1"] =+ d["MCP.1"];
+					d.MIG =+ d.MIG;
+					d.MIP2 =+ d.MIP2;
+					d["MIP.1a"] =+ d["MIP.1a"];
+					d["MIP.1b"] =+ d["MIP.1b"];
+					d.RANTES =+ d.RANTES;
+					d.TNFa =+ d.TNFa;
+					d.Tissue_Type =+ d.Tissue_Type;
+					d.Treatment = d.Treatment;
+					d.VEGF =+ d.VEGF;
+					d.mouse_sample =+ d.mouse_sample;
+				});
+
+				data2015.forEach(function(d) {
+					d.Eotaxin =+ d.Eotaxin;
+					d["G.CSF"] =+ d["G.CSF"];
+					d["GM.CSF"] =+ d["GM.CSF"];
+					d["IL.1a"] =+ d["IL.1a"];
+					d["IL.1b"] =+ d["IL.1b"];
+					d["IL.2"] =+ d["IL.2"];
+					d["IL.3"] =+ d["IL.2"];
+					d["IL.4"] =+ d["IL.4"];					
+					d["IL.5"] =+ d["IL.5"];
+					d["IL.6"] =+ d["IL.6"];
+					d["IL.7"] =+ d["IL.7"];
+					d["IL.9"] =+ d["IL.9"];
+					d["IL.10"] =+ d["IL.10"];
+					d["IL.12p40"] =+ d["IL.12p40"];
+					d["IL.12p70"] =+ d["IL.12p70"];	
+					d["IL.13"] =+ d["IL.13"];
+					d["IL.15"] =+ d["IL.15"];				
+					d["IL.17"] =+ d["IL.17"];
+					d.INFg =+ d.INFg;
+					d["IL.13"] =+ d["IL.13"];
+					d.KC =+ d.KC;
+					d.LIF =+ d.LIF;
+					d["M.CSF"] =+ d["M.CSF"];
+					d["MCP.1"] =+ d["MCP.1"];
+					d.MIG =+ d.MIG;
+					d.MIP2 =+ d.MIP2;
+					d["MIP.1a"] =+ d["MIP.1a"];
+					d["MIP.1b"] =+ d["MIP.1b"];
+					d.RANTES =+ d.RANTES;
+					d.TNFa =+ d.TNFa;
+					d.Tissue_Type =+ String(d.Tissue_Type);
+					d.Treatment = d.Treatment;
+					d.VEGF =+ d.VEGF;
+					d.mouse_sample =+ String(d.mouse_sample);
+				});
+
+				var yDom = [];
+				var yDom2015 = [];
+				data.forEach(function(d) {
+					if (d.Treatment == "AIP") {
+						yDom.push(d["IL.1a"]); 
+					}
+				});
+				data2015.forEach(function(d) {
+					if (d.Treatment == "AIP") {
+						yDom2015.push(d["IL.1a"]); 
+					}
+				});
+
+				var yScale = d3.scale.linear()
+						.domain([0, yDom.length])
+						.range([0, height]);
+				var yAxis = d3.svg.axis()
+								.scale(yScale)
+								.orient("left");
+
+				svg.append("g")
+	    			.attr("class", "y axis")
+	    			.attr("transform", "translate(" + width/2 + ",0)")
+	    			.call(yAxis);
+	    		
+	    		var chart = svg.append('g')
+							.attr("transform", "translate("+width/2+",0)")
+							.attr('id','bars')
+							.selectAll('rect')
+							.data(yDom)
+							.enter()
+							.append('rect')
+							.attr('height',15)
+							.attr({'x':0,'y':function(d,i){ return yScale(i); }})
+							.attr('width',function(d, i){ return yDom[i] % 200; })
+							.style('fill', function(d, i) { return color(i%20); });
+				var chart1 = svg.append('g')
+							.attr("transform", "translate(0,0)")
+							.attr('id','bars')
+							.selectAll('rect')
+							.data(yDom2015)
+							.enter()
+							.append('rect')
+							.attr('height',15)
+							.attr({'x':0,'y':function(d,i){ return yScale(i); }})
+							.attr('width',function(d, i){ return yDom2015[i] % 200; })
+							.style('fill', function(d, i) { return color(i%20); })
+							.attr("transform", function(d,i){ return "translate(" + Number((width/2)-(yDom2015[i] % 200) - 6)  + ", 0)" });
+
+			});
+			
+			
+
+	 		/*var PatientIDs = new Array();
 	 		var Days_From1stTBI = new Array();
 	 		var summary_encounter = {}
 	 		var Patient_Encounter = {}
@@ -135,15 +235,15 @@
 								.range([0, width]);
 
 			var yAxis = d3.svg.axis().scale(yScale).orient("left");
-			var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+			var xAxis = d3.svg.axis().scale(xScale).orient("bottom");*/
 			/*svg.append("g").attr("class", "x axis")
 							.attr("transform", "translate("+0+","+height+")")
 							.attr("stroke-width", "1")
 							.call(xAxis);*/
-			svg.append("g").attr("class", "y axis")
+			/*svg.append("g").attr("class", "y axis")
 							.attr("stroke-width", "1")
 							.call(yAxis);
-			var centerCal = width * (-minDays_From1stTBI)/(maxDays_From1stTBI - minDays_From1stTBI);
+			var centerCal = width * (-minDays_From1stTBI)/(maxDays_From1stTBI - minDays_From1stTBI);*/
 			/*svg.append("g").attr("class", "centeraxis")
 							.attr("transform", "translate("+centerCal+","+0+")")
 							.call(yAxis);*/
@@ -156,7 +256,7 @@
 				};
 				
 			};*/
-			function cal0(Patient_Color_xy, ind) {
+			/*function cal0(Patient_Color_xy, ind) {
 				var arr = []
 				for (var k = 0; k < PatientIDs.length; k++) {
 					for (var i = 0; i < Patient_Color_xy[PatientIDs[k]].length; i++ ) {
@@ -168,8 +268,8 @@
 		
 			var xMap = cal0(Patient_Color_xy, 0);
 			var yMap = cal0(Patient_Color_xy, 1);
-			var colorMap = cal0(Patient_Color_xy, 2);
-			for (var k = 0; k < PatientIDs.length; k++) {
+			var colorMap = cal0(Patient_Color_xy, 2);*/
+			/*for (var k = 0; k < PatientIDs.length; k++) {
 
 				svg.append("line")
 					.attr("class", "grid")
@@ -179,8 +279,8 @@
 					.attr("x2", width*3)
 					.attr("y2", yScale(PatientIDs[k]) - 10);
 
-			}
-
+			}*/
+/*
 			svg.append("line")
 					.attr("class", "grid")
 					.style("stroke", "black")
@@ -199,8 +299,8 @@
 					.attr("y2", height+10);
 
 
-			};
-			console.log(Patient_Color_xy);
+			};*/
+			/*console.log(Patient_Color_xy);
 			for (var k = 0; k < PatientIDs.length; k++) {
 					for (var i = 0; i < Patient_Color_xy[PatientIDs[k]].length; i++ ) {
 						svg
@@ -218,8 +318,8 @@
 						.attr("style", "green")
 						.style("fill", Patient_Color_xy[PatientIDs[k]][i][2]);
 					}
-				}
-			var encounters = ["Stress","PTSD","Speech","Anxiety","Depression","Headache","Sleep","Audiology","Vision","Neurologic","Alzheimer","Cognitive","PCS","Endocrine","Skull_inj","NON_skull_inj"];
+				}*/
+			/*var encounters = ["Stress","PTSD","Speech","Anxiety","Depression","Headache","Sleep","Audiology","Vision","Neurologic","Alzheimer","Cognitive","PCS","Endocrine","Skull_inj","NON_skull_inj"];
 	        var encounterLegends = d3.select(".legends.primary .legendsBody")
 	            .selectAll(".legendCell")
 	            .data(encounters);
@@ -239,7 +339,7 @@
 	                parent.append("div")
 	                    .attr("class", "legendText")
 	                    .text(d);
-	            });
+	            });*/
 		});
 	</script>
 </body>
