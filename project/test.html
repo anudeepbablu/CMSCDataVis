@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<title>HomeWork4</title>
+
+</head>
+
+<body>
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+	<script>
+
+//Make an SVG Container
+ var svgContainer = d3.select("body").append("svg")
+                                     .attr("width", 3000)
+                                     .attr("height", 2800);
+ 
+ //Draw the Rectangle
+ var rectangle = svgContainer.append("rect")
+                             .attr("x", 200)
+                             .attr("y", 200)
+                            .attr("width", 50)
+                            .attr("height", 100)
+                            .attr("transform", "rotate(0 200 300)");
+
+var rectangle1 = svgContainer.append("rect")
+                             .attr("x", 300)
+                             .attr("y", 200)
+                            .attr("width", 50)
+                            .attr("height", 100)
+							.attr("transform", "rotate(60 250 300)");
+var rectangle = svgContainer.append("rect")
+                             .attr("x", 400)
+                             .attr("y", 200)
+                            .attr("width", 50)
+                            .attr("height", 100)
+                            .attr("transform", "rotate(120 350 300)");
+var rectangle2 = svgContainer.append("rect")
+                             .attr("x", 500)
+                             .attr("y", 200)
+                            .attr("width", 50)
+                            .attr("height", 100)
+                            .attr("transform", "rotate(60 500 300)");
+
+var rectangle = svgContainer.append("rect")
+                             .attr("x", 600)
+                             .attr("y", 200)
+                            .attr("width", 50)
+                            .attr("height", 100)
+                            .attr("transform", "rotate(60 600 300)");
+var rectangle = svgContainer.append("rect")
+                             .attr("x", 700)
+                             .attr("y", 200)
+                            .attr("width", 50)
+                            .attr("height", 100)
+                            .attr("transform", "rotate(60 700 300)");
+
+    </script>
+</body>
