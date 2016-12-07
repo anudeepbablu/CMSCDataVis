@@ -8,53 +8,67 @@
 </head>
 
 <body>
+	<button onclick="myFunction()">Click me</button>
 	<script src="https://d3js.org/d3.v3.min.js"></script>
 	<script>
-
+	var rotation = 0;
+	function myFunction() {
+		rotation += 45;
+    	var innerArrow = document.getElementById("rectid");
+    	innerArrow.setAttribute("transform", "rotate(" + rotation % 360 + " " + " 200 300 "+")");
+	} 
+	function cal_point(x, y, angle, x1, y1) {
+		var newX = x1 + ( Math.cos(angle) * (x-x1) + Math.sin(angle) * (y -y1));
+ 		var newY = y1 + ( -Math.sin(angle) * (x-x1) + Math.cos(angle) * (y -y1));
+ 		return [newX, newY];
+	}
 //Make an SVG Container
  var svgContainer = d3.select("body").append("svg")
                                      .attr("width", 3000)
                                      .attr("height", 2800);
  
  //Draw the Rectangle
+ var width = 50, height = 100;
+ var x = 200, y = 200;
  var rectangle = svgContainer.append("rect")
-                             .attr("x", 200)
-                             .attr("y", 200)
-                            .attr("width", 50)
-                            .attr("height", 100)
-                            .attr("transform", "rotate(0 200 300)");
+ 							.attr("id", "rectid")
+                            .attr("x", x)
+                            .attr("y", y)
+                            .attr("width", width)
+                            .attr("height", height)
+                            .attr("transform", "translate(0 0) rotate(0 " + " " + x + " " + (y + height)+" ) ");
 
 var rectangle1 = svgContainer.append("rect")
-                             .attr("x", 300)
+                             .attr("x", 200)
                              .attr("y", 200)
-                            .attr("width", 50)
-                            .attr("height", 100)
-							.attr("transform", "rotate(60 250 300)");
+                            .attr("width", width)
+                            .attr("height", height)
+							.attr("transform", "translate(" +width+ " 0) rotate(60 " + " " + x + " " + (y + height)+" ) ");
 var rectangle = svgContainer.append("rect")
-                             .attr("x", 400)
+                             .attr("x", 200)
                              .attr("y", 200)
-                            .attr("width", 50)
-                            .attr("height", 100)
-                            .attr("transform", "rotate(120 350 300)");
+                            .attr("width", width)
+                            .attr("height", height)
+                            .attr("transform", "translate(" +width*2+ " 0) rotate(120 " + " " + x + " " + (y + height)+" )  translate(50 0)");
 var rectangle2 = svgContainer.append("rect")
-                             .attr("x", 500)
+                             .attr("x", 200)
                              .attr("y", 200)
-                            .attr("width", 50)
-                            .attr("height", 100)
-                            .attr("transform", "rotate(60 500 300)");
+                            .attr("width", width)
+                            .attr("height", height)
+                            .attr("transform", "translate(0 0) rotate(180 " + " " + x + " " + (y + height)+" )  translate(-50 " + (-1.732 * 50) + ")");
 
 var rectangle = svgContainer.append("rect")
-                             .attr("x", 600)
+                             .attr("x", 200)
                              .attr("y", 200)
-                            .attr("width", 50)
-                            .attr("height", 100)
-                            .attr("transform", "rotate(60 600 300)");
+                            .attr("width", width)
+                            .attr("height", height)
+                            .attr("transform", "translate(" +(-width)+ " 0) rotate(-60 " + " " + (x+width) + " " + (y + height)+" ) ");
 var rectangle = svgContainer.append("rect")
-                             .attr("x", 700)
+                             .attr("x", 200)
                              .attr("y", 200)
-                            .attr("width", 50)
-                            .attr("height", 100)
-                            .attr("transform", "rotate(60 700 300)");
+                            .attr("width", width)
+                            .attr("height", height)
+                            .attr("transform", "translate(" +(-width*2)+ " 0) rotate(-120 " + " " + (x+width) + " " + (y + height)+" )  translate(" +(-width)+ " 0)");
 
     </script>
 </body>

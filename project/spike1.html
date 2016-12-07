@@ -3,12 +3,37 @@
 <html>
 
 <head>
-	<title>Project</title>
-
+	<title>HomeWork4</title>
+	<style>
+		.aParent div {
+  			float: left;
+  			clear: none; 
+		}
+		.aParent1 div {
+  			float: left;
+  			clear: none; 
+		}
+	</style>
 </head>
 
 <body>
 	<button onclick="myFunction()">Click me</button>
+	<div class="aParent">
+		<div>
+			<svg width="50" height="50">
+				<rect x="0" y="0" width="50" height="50" fill="rgba(67, 67, 72, 0.5)" />
+			</svg>
+		</div>
+		<div> <p>2016</p> </div>
+	</div>
+	<div class="aParent" >
+		<div>
+			<svg width="50" height="50">
+				<rect x="0" y="0" width="50" height="50" fill="rgba(102, 102, 255, 0.5)" />
+			</svg>
+		</div>
+		<div> <p>2016</p> </div>
+	</div>
 	<script src="https://d3js.org/d3.v3.min.js"></script>
 	<script>
 	var rotation = 0;
@@ -17,8 +42,8 @@
     	var innerArrow = document.getElementById("therapy");
     	innerArrow.setAttribute("transform", "rotate(" + rotation % 360 + " " + (20+2*670+height) +" 630)");
 	} 
-		var w = window.innerWidth;
-		var h = window.innerHeight;
+		var w = 1400;
+		var h = 1000;
 		var margin = {top: 20, right: 150, bottom: 80, left: 150},
 			widthSVG = w - margin.right - margin.left,
 			heightSVG = h - margin.top - margin.bottom;
@@ -118,13 +143,50 @@
 
 				therapy_list = ["AIP", "AIV", "IPV", "AIPV", "untreated", "APV"]
 				for (var e = 0; e < therapy_list.length; e++) {
-					
-  				var svg = svg1.append("g")
-  						.attr("id", "therapy")
-    					.attr("transform", "translate("+(20+e*670)+", 630)");
-    					//.append("g")
-    					//.attr("transform", "rotate("+ (-120+e*60) +" "+(20+2*670+height)+" "+630+")");
-    					//.attr("transform", "translate("+(10+e*450)+", 20) rotate("+ (-120+e*60) +" "+(10+e*450)+" "+20+") translate("+0+", "+200+")");
+				
+				function t1(e, wid) {
+					if((e*60) < 180) {
+    					return e*wid;
+    				}
+    				else {
+    					return (e%3) * wid * -1;
+    				}  
+				}
+
+				function r1(e) {
+					if ((e*60) <= 180) {
+    					return e*60;
+    				}
+    				else {
+    					return 180 - e*60;
+    				}
+				}
+
+				function t2(e, wid) {
+					if ((e*60) == 120) {
+						return wid;
+					}
+					else if ((e*60) == 180) {
+						return -wid;
+					}
+					else if ((e*60) == 300) {
+						return -wid;
+					}
+					else {
+						return 0;
+					}
+				}
+
+				function t3(e, wid) {
+					if ((e*60) == 180) {
+						return -1.735 * wid;
+					}
+					else {
+						return 0;
+					}
+				}
+				
+				
 				var yDom = [];
 				var yDom2015 = [];
 				data.forEach(function(d) {
@@ -184,6 +246,17 @@
 					yDomFinal.push(yDom[i]);
 					yDomFinal.push(yDom2015[i]);
 				}
+				var wid = widthSVG /2 , hei = heightSVG;
+				var x = (20+2*670); var y = 630;
+				console.log(wid);
+				console.log(hei);	
+  				var svg = svg1.append("g")
+  						.attr("id", "therapy")
+    					.attr("transform", "translate("+(20+2*670)+", 630)")
+    					.append("g")
+    					.attr("transform", "translate(" + t1(e, wid) + " 0) rotate("+ r1(e) + " " + x + " " + (y + hei)+" )  translate("+ t2(e, wid) +" " + t3(e, wid)  + ")");
+    					//.attr("transform", "rotate("+ (-120+e*60) +" "+(20+2*670+height)+" "+630+")");
+    					//.attr("transform", "translate("+(10+e*450)+", 20) rotate("+ (-120+e*60) +" "+(10+e*450)+" "+20+") translate("+0+", "+200+")");
 
 				var xScale = d3.scale.linear()
 						.domain([yDom.length, 0])
@@ -207,7 +280,7 @@
 				svg.append("g")
 	    			.attr("class", "x axis")
 	    			.attr("transform", "translate(0, " + height + " )")
-	    			.style({'stroke': 'Black', 'fill': 'none', 'stroke-width': '2px'})
+	    			.style({'stroke': 'Black', 'fill': 'none', 'stroke-width': '0.5px'})
 
 	    			.call(xAxis).selectAll("text").remove();
 	    		
@@ -256,7 +329,7 @@
 	    			.attr("height", function(d) {
 	    				return yScale(d);
 	    			})
-	    			.attr("fill", "rgba(67, 67, 72, 0.5)");
+	    			.attr("fill", "rgba(102, 102, 255, 0.5)");
 
 
 	    		//second svg box 2016
@@ -311,7 +384,7 @@
 	    			.attr("height", function(d) {
 	    				return yScale(d);
 	    			})
-	    			.attr("fill", "rgba(67, 67, 72, 0.5)");
+	    			.attr("fill", "rgba(102, 102, 255, 0.5)");
 
 
 	    		//third svg box 2016
@@ -366,7 +439,7 @@
 	    			.attr("height", function(d) {
 	    				return yScale(d);
 	    			})
-	    			.attr("fill", "rgba(67, 67, 72, 0.5)");
+	    			.attr("fill", "rgba(102, 102, 255, 0.5)");
 
 	    		}
 	    		
