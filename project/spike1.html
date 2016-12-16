@@ -3,7 +3,8 @@
 <html>
 
 <head>
-	<title>HomeWork4</title>
+	<title>Final Project</title>
+	<link rel="stylesheet" href="patterns.css">
 	<style>
 		.aParent div {
   			float: left;
@@ -21,7 +22,7 @@
 	<div class="aParent">
 		<div>
 			<svg width="50" height="50">
-				<rect x="0" y="0" width="50" height="50" fill="rgba(67, 67, 72, 0.5)" />
+				<rect x="0" y="0" width="50" height="50" fill="url(#diagonal-stripe-3)" />
 			</svg>
 		</div>
 		<div> <p>2016</p> </div>
@@ -29,7 +30,7 @@
 	<div class="aParent" >
 		<div>
 			<svg width="50" height="50">
-				<rect x="0" y="0" width="50" height="50" fill="rgba(102, 102, 255, 0.5)" />
+				<rect x="0" y="0" width="50" height="50" fill="url(#circles-6)" />
 			</svg>
 		</div>
 		<div> <p>2016</p> </div>
@@ -43,7 +44,7 @@
     	innerArrow.setAttribute("transform", "rotate(" + rotation % 360 + " " + (20+2*670+height) +" 630)");
 	} 
 		var w = 1400;
-		var h = 1000;
+		var h = 1400;
 		var margin = {top: 20, right: 150, bottom: 80, left: 150},
 			widthSVG = w - margin.right - margin.left,
 			heightSVG = h - margin.top - margin.bottom;
@@ -247,15 +248,15 @@
 					yDomFinal.push(yDom2015[i]);
 				}
 				var wid = widthSVG /2 , hei = heightSVG;
-				var x = (20+2*670); var y = 630;
+				var x = (20+2*670); var y = 1230;
 				console.log(wid);
 				console.log(hei);	
   				var svg = svg1.append("g")
   						.attr("id", "therapy")
-    					.attr("transform", "translate("+(20+2*670)+", 630)")
-    					.append("g")
-    					.attr("transform", "translate(" + t1(e, wid) + " 0) rotate("+ r1(e) + " " + x + " " + (y + hei)+" )  translate("+ t2(e, wid) +" " + t3(e, wid)  + ")");
-    					//.attr("transform", "rotate("+ (-120+e*60) +" "+(20+2*670+height)+" "+630+")");
+    					.attr("transform", "translate("+(20+2*670)+", 1230)")
+    					//.append("g")
+    					.attr("transform", "translate(" + t1(e, wid) + " 0) rotate("+ r1(e) + " " + x + " " + (y + hei)+" )  translate("+ t2(e, wid) +" " + t3(e, wid)  + ")")
+    					.attr("transform", "rotate("+ (-120+e*60) +" "+(20+2*670+height)+" "+1230+")");
     					//.attr("transform", "translate("+(10+e*450)+", 20) rotate("+ (-120+e*60) +" "+(10+e*450)+" "+20+") translate("+0+", "+200+")");
 
 				var xScale = d3.scale.linear()
@@ -288,20 +289,22 @@
 	    		svg.append("g")
 	    			.attr('id','bar1')
 					.selectAll('rect')
-					.data(yDom1)
+					.data(yDom)
 					.enter()
 	    			.append("rect")
+	    			.style("fill", "url(#diagonal-stripe-3)")
 	    			.attr("x", function(d, i) {
-	    				return i * (width / yDom1.length);
+	    				return i * (width / yDom.length);
 	    			})
 	    			.attr("y", function(d) {
 	    				return height - yScale(d);
 	    			})
-	    			.attr("width", width / yDom1.length - 0.5)
+	    			.attr("width", width / yDom.length - 0.5)
 	    			.attr("height", function(d) {
 	    				return yScale(d);
 	    			})
-	    			.attr("fill", "rgba(67, 67, 72, 0.5)");
+	    			.attr("fill", "rgba(67, 67, 72, 0.5)")
+	    			.style("fill", "url(#circles-1) #fff");
 
 
 	    		//first svg box 2015
@@ -316,22 +319,23 @@
 	    		svg.append("g")
 	    			.attr('id','bar1')
 					.selectAll('rect')
-					.data(yDom20151)
+					.data(yDom2015)
 					.enter()
 	    			.append("rect")
+	    			.style("fill", "url(#circles-6)")
 	    			.attr("x", function(d, i) {
-	    				return i * (width / yDom20151.length);
+	    				return i * (width / yDom2015.length);
 	    			})
 	    			.attr("y", function(d) {
 	    				return height - yScale(d);
 	    			})
-	    			.attr("width", width / yDom20151.length - 0.5)
+	    			.attr("width", width / yDom2015.length - 0.5)
 	    			.attr("height", function(d) {
 	    				return yScale(d);
 	    			})
 	    			.attr("fill", "rgba(102, 102, 255, 0.5)");
 
-
+/*
 	    		//second svg box 2016
 	    		svg.append("g")
 	    			.attr("class", "x axis")
@@ -347,6 +351,7 @@
 					.data(yDom2)
 					.enter()
 	    			.append("rect")
+	    			.style("fill", "url(#diagonal-stripe-3)")
 	    			.attr("x", function(d, i) {
 	    				return i * (width / yDom2.length);
 	    			})
@@ -374,6 +379,7 @@
 					.data(yDom20152)
 					.enter()
 	    			.append("rect")
+	    			.style("fill", "url(#circles-6)")
 	    			.attr("x", function(d, i) {
 	    				return i * (width / yDom20152.length);
 	    			})
@@ -402,6 +408,7 @@
 					.data(yDom3)
 					.enter()
 	    			.append("rect")
+	    			.style("fill", "url(#diagonal-stripe-3)")
 	    			.attr("x", function(d, i) {
 	    				return i * (width / yDom3.length);
 	    			})
@@ -429,6 +436,7 @@
 					.data(yDom20153)
 					.enter()
 	    			.append("rect")
+	    			.style("fill", "url(#circles-6)")
 	    			.attr("x", function(d, i) {
 	    				return i * (width / yDom20153.length);
 	    			})
@@ -439,229 +447,14 @@
 	    			.attr("height", function(d) {
 	    				return yScale(d);
 	    			})
-	    			.attr("fill", "rgba(102, 102, 255, 0.5)");
+	    			.attr("fill", "rgba(102, 102, 255, 0.5)");*/
 
 	    		}
-	    		
-
-	    		//first bar
-	    		/*var chart = svg.append('g')
-							//.attr("transform", "translate(0, " + height +")")
-							.attr('id','bar1')
-							.selectAll('rect')
-							.data(yDomFinal)
-							.enter()
-							.append('rect')
-							.attr('width',5)
-							.attr({'y':0,'x':function(d,i){ return Number(height-yScale(i));}})
-							.attr('height',function(d, i){ return (yDomFinal[i] % 200); })
-							.style('fill', "rgba(0, 128, 0, 0.5)")
-							.attr("transform", function(d,i){ return "translate(-7,+" + Number((height)-(yDomFinal[i] % 200))  + ")" ;});
-
-				//second bar
-				var chart = svg.append('g')
-							//.attr("transform", "translate(0, " + height +")")
-							.attr('id','bar2')
-							.selectAll('rect')
-							.data(yDomFinal)
-							.enter()
-							.append('rect')
-							.attr('width', 10)
-							.attr({'y':0,'x':function(d,i){ return Number(height-yScale(i));}})
-							.attr('height',function(d, i){ return (yDomFinal[i] % 200); })
-							.style('fill', "rgba(67, 67, 72, 0.5)")
-							.attr("transform", function(d,i){ return "translate(-7,+" + Number((height)-(yDomFinal[i] % 200))  + ")" ;});*/
 			});
-			
-			
+});
 
-	 		/*var PatientIDs = new Array();
-	 		var Days_From1stTBI = new Array();
-	 		var summary_encounter = {}
-	 		var Patient_Encounter = {}
-	 		var Patient_Color_xy = {}
-	 		for (var i = data.length - 2; i >= 1; i--) {
-	 			if (!PatientIDs.includes(data[i].PatientID)) {
-
-					PatientIDs.push(data[i].PatientID);
-					summary_encounter[data[i].PatientID] = [0, 0, 0];
-					Patient_Encounter[data[i].PatientID] = [];
-					Patient_Color_xy[data[i].PatientID] = [];
-				};
-				if (data[i].Days_From1stTBI > 0) {
-					summary_encounter[data[i].PatientID][0] += 1;
-					summary_encounter[data[i].PatientID][2] += 1;
-					Patient_Encounter[data[i].PatientID].push(Number(data[i].Days_From1stTBI)); 
-				}
-				else {
-					summary_encounter[data[i].PatientID][1] += 1;	
-					summary_encounter[data[i].PatientID][2] += 1;
-					Patient_Encounter[data[i].PatientID].push(Number(data[i].Days_From1stTBI));
-				}
-				Days_From1stTBI.push(data[i].Days_From1stTBI);
-			};
-			
-			function sortNumber(a,b) {
-    			return a - b;
-			}
-			for (var i = 0; i < PatientIDs.length; i++) {
-				Patient_Encounter[PatientIDs[i]]=Patient_Encounter[PatientIDs[i]].sort(sortNumber);
-			};
-			var count = [0, []];
-			var minDays_From1stTBI =  Math.min.apply(Math, Days_From1stTBI);
-			var maxDays_From1stTBI =  Math.max.apply(Math, Days_From1stTBI);
-			var maxSummaryLeft = -Infinity, maxSummaryRight = -Infinity, x;
-			
-			for( x in summary_encounter) {
-			    if( summary_encounter[x][1] > maxSummaryRight) maxSummaryRight = summary_encounter[x][1];
-			    if( summary_encounter[x][0] > maxSummaryLeft) maxSummaryLeft = summary_encounter[x][0];
-			}
-
-			for (var i = 0; i < data.length; i++) {
-				for (var p = 0; p < diseases.length; p++) {
-					if (data[i][diseases[p]]) {
-						count[0]++;
-						count[1].push(diseases[p]);
-					}
-				}
-				
-				r = 0;
-				t = (height/PatientIDs.length)/count[0];
-				while (r < count[0]) {
-					Patient_Color_xy[data[i].PatientID].push([
-							(width*3/(maxSummaryLeft+maxSummaryRight))*Patient_Encounter[data[i].PatientID].indexOf(data[i].Days_From1stTBI),
-							PatientIDs.indexOf(data[i].PatientID)+(r+1),
-							disease_color[count[1][r]]
-						]);
-					r++;
-				}
-				count = [0,[]];
-			}
-			
-
-			//var minEncounters
-			var svg = d3.select("body")
-	                    .append("svg")
-	                    .attr("width", width*3+margin.left+margin.right)
-	                    .attr("height", height+margin.top+margin.bottom)
-	                    .append("g")
-	                    .attr("class", "gbody")
-	                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-			var yScale = d3.scale.ordinal()
-								.domain(PatientIDs)
-								.rangePoints([height, 0]);
-			var xScale = d3.scale.linear()
-								.domain([0, maxSummaryLeft + maxSummaryRight])
-								.range([0, width]);
-
-			var yAxis = d3.svg.axis().scale(yScale).orient("left");
-			var xAxis = d3.svg.axis().scale(xScale).orient("bottom");*/
-			/*svg.append("g").attr("class", "x axis")
-							.attr("transform", "translate("+0+","+height+")")
-							.attr("stroke-width", "1")
-							.call(xAxis);*/
-			/*svg.append("g").attr("class", "y axis")
-							.attr("stroke-width", "1")
-							.call(yAxis);
-			var centerCal = width * (-minDays_From1stTBI)/(maxDays_From1stTBI - minDays_From1stTBI);*/
-			/*svg.append("g").attr("class", "centeraxis")
-							.attr("transform", "translate("+centerCal+","+0+")")
-							.call(yAxis);*/
-
-			//draw squares
-			/*var square_grid_data = []
-			for (var i = 0; i <= maxDays_From1stTBI-minDays_From1stTBI; i++)
-				for (var j = 0; j <= (height+margin.top+margin.bottom)/PatientIDs.length; j++) {
-					square_grid_data[i] = [minDays_From1stTBI+j, 0];	
-				};
-				
-			};*/
-			/*function cal0(Patient_Color_xy, ind) {
-				var arr = []
-				for (var k = 0; k < PatientIDs.length; k++) {
-					for (var i = 0; i < Patient_Color_xy[PatientIDs[k]].length; i++ ) {
-						arr.push(Patient_Color_xy[PatientIDs[k]][i][ind]);
-					}
-				}
-				return arr;
-			}
-		
-			var xMap = cal0(Patient_Color_xy, 0);
-			var yMap = cal0(Patient_Color_xy, 1);
-			var colorMap = cal0(Patient_Color_xy, 2);*/
-			/*for (var k = 0; k < PatientIDs.length; k++) {
-
-				svg.append("line")
-					.attr("class", "grid")
-					.style("stroke", "black")
-					.attr("x1", 0)
-					.attr("y1", yScale(PatientIDs[k]) - 10)
-					.attr("x2", width*3)
-					.attr("y2", yScale(PatientIDs[k]) - 10);
-
-			}*/
-/*
-			svg.append("line")
-					.attr("class", "grid")
-					.style("stroke", "black")
-					.attr("x1", 0)
-					.attr("y1", height + 10)
-					.attr("x2", width*3)
-					.attr("y2", height + 10);
-
-			for (var i = 0; i <= maxSummaryRight+maxSummaryLeft; i++) {
-				svg.append("line")
-					.attr("class", "grid")
-					.style("stroke", "black")
-					.attr("x1", (width*i/(maxSummaryRight+maxSummaryLeft))*3)
-					.attr("y1", -10)
-					.attr("x2", (width*i/(maxSummaryRight+maxSummaryLeft))*3)
-					.attr("y2", height+10);
-
-
-			};*/
-			/*console.log(Patient_Color_xy);
-			for (var k = 0; k < PatientIDs.length; k++) {
-					for (var i = 0; i < Patient_Color_xy[PatientIDs[k]].length; i++ ) {
-						svg
-						// .data(Patient_Color_xy[PatientIDs[k]][i])
-						
-						.append("rect")
-						.attr("class", "color_grid")
-						//.attr("x", 6)
-						//.attr("y", 6)
-						.attr("x", Patient_Color_xy[PatientIDs[k]][i][0])
-						
-						.attr("y", yScale(PatientIDs[k]) - 10)
-						.attr("width", width*3/(maxSummaryRight+maxSummaryLeft))
-						.attr("height", 20)
-						.attr("style", "green")
-						.style("fill", Patient_Color_xy[PatientIDs[k]][i][2]);
-					}
-				}*/
-			/*var encounters = ["Stress","PTSD","Speech","Anxiety","Depression","Headache","Sleep","Audiology","Vision","Neurologic","Alzheimer","Cognitive","PCS","Endocrine","Skull_inj","NON_skull_inj"];
-	        var encounterLegends = d3.select(".legends.primary .legendsBody")
-	            .selectAll(".legendCell")
-	            .data(encounters);
-	        
-	        encounterLegends.enter()
-	            .append("div")
-	            .attr("class", function(d){
-	                return "legendCell " + d;
-	            })
-	            .each(function(d){
-	                var parent = d3.select(this);
-
-	                parent.append("div")
-	                    .attr("class", "colorTile cell " + d)
-	                    .style("background", color(d));
-
-	                parent.append("div")
-	                    .attr("class", "legendText")
-	                    .text(d);
-	            });*/
-		});
 	</script>
+	<svg height="1" width="1" xmlns="http://www.w3.org/2000/svg" version="1.1"> <defs> <pattern id="circles-6" patternUnits="userSpaceOnUse" width="1" height="1"> <image xlink:href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSd3aGl0ZScgLz4KICA8Y2lyY2xlIGN4PSczLjUnIGN5PSczLjUnIHI9JzMuNScgZmlsbD0nYmxhY2snLz4KPC9zdmc+Cg==" x="0" y="0" width="1" height="1"> </image> </pattern> </defs> </svg>
+	<svg height="1" width="1" xmlns="http://www.w3.org/2000/svg" version="1.1"> <defs> <pattern id="diagonal-stripe-3" patternUnits="userSpaceOnUse" width="1" height="1"> <image xlink:href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSd3aGl0ZScvPgogIDxwYXRoIGQ9J00tMSwxIGwyLC0yCiAgICAgICAgICAgTTAsMTAgbDEwLC0xMAogICAgICAgICAgIE05LDExIGwyLC0yJyBzdHJva2U9J2JsYWNrJyBzdHJva2Utd2lkdGg9JzMnLz4KPC9zdmc+" x="0" y="0" width="1" height="1"> </image> </pattern> </defs> </svg>
 </body>
 </html>
