@@ -1,0 +1,601 @@
+<!doctype html>
+<meta charset=utf-8>
+<title>Symptoms Before and After Injury</title>
+<style>
+	.domain { 
+  		fill: none; 
+  		stroke: black; 
+  		stroke-width; 1.25; 
+	} 
+	.mainSVG {
+		overflow: auto;
+	}
+</style>
+
+<body>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src=js/d3-selection-multi.v1.min.js></script>
+  <script>
+  		var w = window.innerWidth * 3;
+		var h = window.innerHeight * 2;
+  		var margin = {top: 30, right: 50, bottom: 70, left: 50};
+		var width = w - margin.left - margin.right;
+		var height = h - margin.top - margin.bottom;
+		var padding = 50;
+		var vis = d3.select("body")
+					.append("svg:svg")
+					.attr("class", "mainSVG")
+                	.attr("width", width)
+                	.attr("height", height);
+  		/*var fs = require("fs");
+		var text = fs.readFileSync("./patterns.txt", "utf-8");
+		var textByLine = text.split("\n")
+		console.log(textByLine);*/
+		
+  		d3.json("/data/ehr.json", function(data) {
+  			d3.text("patterns.txt", function(patterns){
+			
+			var textByLine = patterns.split("\n");
+  			var minDays = Infinity,
+    			maxDays = -Infinity;
+  			for (var i = 0; i < data.length ; i++) {
+  				for (var j = 0; j < data[i]["encounters"].length; j++) {
+  					if(data[i]["encounters"][j]["i"] > maxDays) {
+  						maxDays = data[i]["encounters"][j]["i"];
+  					}
+  					if (data[i]["encounters"][j]["i"] < minDays) {
+  						minDays = data[i]["encounters"][j]["i"];
+  					}
+  				}
+  			}
+  			var finalObj = [];
+  			var tempObj = {}
+  			for (var k = 0; k < textByLine.length; k++) {
+
+  				var temp = textByLine[k].split(" ");
+  				console.log(temp);
+  				var A = temp[0], B = temp[1];
+  				var dayNumberA = minDays;
+  				var flag = 0;
+  				for (var i = 0; i < data.length ; i++) {
+  					for (var j = 0; j < data[i]["encounters"].length; j++) {
+  						if (data[i]["encounters"][j][A] == true && flag == 0) {
+  							dayNumberA = data[i]["encounters"][j]["i"];
+  							flag = 1;
+  							continue;
+  						}
+  						if (data[i]["encounters"][j][B] == true && flag == 1) {
+  							//dayNumberB = data[i]["encounters"][j]["i"];
+  							tempObj.id = data[i]["id"];
+  							tempObj.age = data[i]["injury"]["age"];
+  							tempObj.dayNumberA = dayNumberA;
+  							tempObj.dayNumberB = data[i]["encounters"][j]["i"];
+  							tempObj.symbolType = k;
+  							finalObj.push(tempObj);
+  							tempObj = {};
+  							dayNumberA = minDays;
+  							flag = 0;
+  						}
+  					}
+  				}
+  			}
+  			
+        var yScale = d3.scale.linear()
+	        			.domain([0, 80])  
+						.range([height - padding, padding]);
+        
+        var xScale = d3.scale.linear()
+	        .domain([minDays, maxDays])   
+			.range([padding, width-padding]); 
+        var yAxis = d3.svg.axis()
+            .orient("left")
+            .scale(yScale);
+        var rectWidth = (width - padding - padding) / (maxDays - minDays);
+        console.log(rectWidth);
+        var rectHeight = (height - padding - padding) / 80;
+        console.log(rectHeight);
+        var xAxis = d3.svg.axis()
+            .orient("bottom")
+            .scale(xScale);
+
+        // draw y axis with labels and move in from the size by the amount of padding
+        vis.append("g")
+            .attr("transform", "translate("+padding+",0)")
+            .call(yAxis);
+
+        // draw x axis with labels and move to the bottom of the chart area
+        vis.append("g")
+            .attr("class", "xaxis")   // give it a class so it can be used to select only xaxis labels  below
+            .attr("transform", "translate(0," + (height - padding) + ")")
+            .call(xAxis);
+        function shapeType(num, finalObj) {
+        	console.log(num);
+        	switch(num) {
+        		case 0:
+        			vis.append("g")
+        				.attr("width", rectWidth)
+        				.attr("height", rectHeight)
+        				.attr("transform", "translate("+(padding+xScale(finalObj.dayNumberA))+","+(padding+yScale(finalObj.age))+")")
+        				.append("circle")
+        				.attr({
+        					cx : rectWidth / 2,
+        					cy : rectHeight / 2,
+        					r : 2,
+        					"fill" : "black"
+        				});
+        			break;
+        		case 1:
+        			vis.append("g")
+        				.attr("width", rectWidth)
+        				.attr("height", rectHeight)
+        				.attr("transform", "translate("+(padding+xScale(finalObj.dayNumberA))+","+(padding+yScale(finalObj.age))+")")
+        				.append("circle")
+        				.attr({
+        					cx : rectWidth / 2,
+        					cy : rectHeight / 2,
+        					r : 2,
+        					"fill" : "none",
+        					"stroke" : "black",
+        					"stroke-width" : 0.25
+        				});
+        			break;
+        		case 2:
+        			vis.append("g")
+        				.attr("width", rectWidth)
+        				.attr("height", rectHeight)
+        				.attr("transform", "translate("+(padding+xScale(finalObj.dayNumberA))+","+(padding+yScale(finalObj.age))+")")
+        				.append("line")
+        				.attr({
+        					x1 : rectWidth / 10,
+        					y1 : rectHeight / 2,
+        					x2 : rectWidth * 9/ 10,
+        					y2 : rectHeight / 2,
+        					"stroke" : "black",
+        					"stroke-width" : 0.25
+        				});
+        			break;
+        		case 3:
+        			var tempLine = 
+        			vis.append("g")
+        				.attr("width", rectWidth)
+        				.attr("height", rectHeight)
+        				.attr("transform", "translate("+(padding+xScale(finalObj.dayNumberA))+","+(padding+yScale(finalObj.age))+")")
+
+        				tempLine.append("line")
+        				.attr({
+        					x1 : rectWidth / 10,
+        					y1 : rectHeight * 9 / 10,
+        					x2 : rectWidth * 9 / 10,
+        					y2 : rectHeight * 9 / 10,
+        					"stroke" : "black",
+        					"stroke-width" : 0.25
+        				});
+        				tempLine.append("line")
+        				.attr({
+        					x1 : rectWidth / 10,
+        					y1 : rectHeight * 11 / 10,
+        					x2 : rectWidth * 9 / 10,
+        					y2 : rectHeight * 11 / 10,
+        					"stroke" : "black",
+        					"stroke-width" : 0.25
+        				});
+        			break;
+        		case 4:
+        			vis.append("g")
+        				.attr("width", rectWidth)
+        				.attr("height", rectHeight)
+        				.attr("transform", "translate("+(padding+xScale(finalObj.dayNumberA))+","+(padding+yScale(finalObj.age))+")")
+        				.append("line")
+        				.attr({
+        					x1 : rectWidth / 10,
+        					y1 : rectHeight / 2,
+        					x2 : rectWidth * 8/ 10,
+        					y2 : rectHeight / 2,
+        					"stroke" : "black",
+        					"stroke-width" : 0.25
+        				})
+        				.attr("transform", "rotate("+30+","+rectWidth/10+","+rectHeight / 2+")");
+        			break;
+        		case 5:
+        			var tempLine = 
+	        			vis.append("g")
+	        				.attr("width", rectWidth)
+	        				.attr("height", rectHeight)
+	        				.attr("transform", "translate("+(padding+xScale(finalObj.dayNumberA))+","+(padding+yScale(finalObj.age))+")")
+        				tempLine.append("line")
+	        				.attr({
+	        					x1 : rectWidth / 10,
+	        					y1 : rectHeight * 9 / 10,
+	        					x2 : rectWidth * 8 / 10,
+	        					y2 : rectHeight * 9 / 10,
+	        					"stroke" : "black",
+	        					"stroke-width" : 0.25
+	        				})
+        					.attr("transform", "rotate("+30+","+rectWidth/10+","+rectHeight / 2+")");
+        				tempLine.append("line")
+        				.attr({
+        					x1 : rectWidth / 10,
+        					y1 : rectHeight * 11 / 10,
+        					x2 : rectWidth * 8 / 10,
+        					y2 : rectHeight * 11 / 10,
+        					"stroke" : "black",
+        					"stroke-width" : 0.25
+        				})
+        				.attr("transform", "rotate("+30+","+rectWidth/10+","+rectHeight / 2+")");
+        			break;
+        		case 6:
+        			vis.append("svg")
+        				.attr("width", rectWidth)
+        				.attr("height", rectHeight)
+        				.attr("transform", "translate("+(padding+xScale(finalObj.dayNumberA))+","+(padding+yScale(finalObj.age))+")")
+        				.append("line")
+        				.attr({
+        					x1 : rectWidth * 5 / 10,
+        					y1 : rectHeight * 0.35,
+        					x2 : rectWidth * 5/ 10,
+        					y2 : rectHeight * 0.65,
+        					"stroke" : "black",
+        					"stroke-width" : 0.25
+        				});
+        			break;
+
+        		case 7:
+        			var tempLine = 
+	        			vis.append("g")
+	        				.attr("width", rectWidth)
+	        				.attr("height", rectHeight)
+	        				.attr("transform", "translate("+(padding+xScale(finalObj.dayNumberA))+","+(padding+yScale(finalObj.age))+")")
+        				tempLine.append("line")
+	        				.attr({
+	        					x1 : rectWidth *4/ 10,
+	        					y1 : rectHeight * 7 / 20,
+	        					x2 : rectWidth * 4 / 10,
+	        					y2 : rectHeight * 13 / 20,
+	        					"stroke" : "black",
+	        					"stroke-width" : 0.25
+	        				});
+        				tempLine.append("line")
+        				.attr({
+        					x1 : rectWidth*6 / 10,
+        					y1 : rectHeight * 7 / 20,
+        					x2 : rectWidth * 6 / 10,
+        					y2 : rectHeight * 13 / 20,
+        					"stroke" : "black",
+        					"stroke-width" : 0.25
+        				});
+        			break;
+
+        		case 8:
+        			vis.append("svg")
+        				.attr("width", rectWidth)
+        				.attr("height", rectHeight)
+        				.attr("transform", "translate("+(padding+xScale(finalObj.dayNumberA))+","+(padding+yScale(finalObj.age))+")")
+        				.append("line")
+        				.attr({
+        					x1 : rectWidth * 3 / 10,
+        					y1 : rectHeight / 2,
+        					x2 : rectWidth * 9/ 10,
+        					y2 : rectHeight / 2,
+        					"stroke" : "black",
+        					"stroke-width" : 0.25
+        				})
+        				.attr("transform", "rotate("+(-1*60)+","+rectWidth*8/10+","+rectHeight / 2+")");
+        			break;
+
+        		case 9:
+        			var tempLine = 
+	        			vis.append("g")
+	        				.attr("width", rectWidth)
+	        				.attr("height", rectHeight)
+	        				.attr("transform", "translate("+(padding+xScale(finalObj.dayNumberA))+","+(padding+yScale(finalObj.age))+")");
+        				tempLine.append("line")
+	        				.attr({
+	        					x1 : rectWidth * 3/ 10,
+	        					y1 : rectHeight * 9/ 20,
+	        					x2 : rectWidth * 9 / 10,
+	        					y2 : rectHeight *9/ 20,
+	        					"stroke" : "black",
+	        					"stroke-width" : 0.25
+	        				})
+        					.attr("transform", "rotate("+(-1*60)+","+rectWidth*9/10+","+rectHeight / 2+")");
+        				tempLine.append("line")
+        				.attr({
+        					x1 : rectWidth * 3/ 10,
+        					y1 : rectHeight * 11 / 20,
+        					x2 : rectWidth*9 / 10,
+        					y2 : rectHeight * 11 / 20,
+        					"stroke" : "black",
+        					"stroke-width" : 0.25
+        				})
+        				.attr("transform", "rotate("+(-1*60)+","+rectWidth*9/10+","+rectHeight / 2+")");
+        			
+        			break;
+        		case 10:
+        			var tempLine = 
+	        			vis.append("g")
+	        				.attr("width", rectWidth)
+	        				.attr("height", rectHeight)
+	        				.attr("transform", "translate("+(padding+xScale(finalObj.dayNumberA))+","+(padding+yScale(finalObj.age))+")");
+        				tempLine.append("line")
+	        				.attr({
+	        					x1 : rectWidth * 3/ 10,
+	        					y1 : rectHeight / 2,
+	        					x2 : rectWidth * 7 / 10,
+	        					y2 : rectHeight / 2,
+	        					"stroke" : "black",
+	        					"stroke-width" : 0.25
+	        				})
+        					.attr("transform", "rotate("+45+","+rectWidth/2+","+rectHeight / 2+")");
+        				tempLine.append("line")
+        				.attr({
+        					x1 : rectWidth / 2,
+        					y1 : rectHeight * 4 / 10,
+        					x2 : rectWidth / 2,
+        					y2 : rectHeight * 6 / 10,
+        					"stroke" : "black",
+        					"stroke-width" : 0.25
+        				})
+        				.attr("transform", "rotate("+45+","+rectWidth/2+","+rectHeight / 2+")");
+        			
+        			break;
+        		case 11:
+        			var tempLine = 
+	        			vis.append("g")
+	        				.attr("width", rectWidth)
+	        				.attr("height", rectHeight)
+	        				.attr("transform", "translate("+(padding+xScale(finalObj.dayNumberA))+","+(padding+yScale(finalObj.age))+")");
+
+        				tempLine.append("line")
+	        				.attr({
+	        					x1 : rectWidth * 2/ 10,
+	        					y1 : rectHeight * 9 / 20,
+	        					x2 : rectWidth * 8 / 10,
+	        					y2 : rectHeight * 9 / 20,
+	        					"stroke" : "black",
+	        					"stroke-width" : 0.25
+	        				})
+        					.attr("transform", "rotate("+(-1*45)+","+rectWidth/2+","+rectHeight / 2+")");
+
+        				tempLine.append("line")
+        				.attr({
+        					x1 : rectWidth *2 / 10,
+        					y1 : rectHeight * 11 / 20,
+        					x2 : rectWidth *8/ 10,
+        					y2 : rectHeight * 11 / 20,
+        					"stroke" : "black",
+        					"stroke-width" : 0.25
+        				})
+        				.attr("transform", "rotate("+(-1*45)+","+rectWidth/2+","+rectHeight / 2+")");
+
+        				tempLine.append("line")
+        				.attr({
+        					x1 : rectWidth / 2,
+        					y1 : rectHeight * 7 / 20,
+        					x2 : rectWidth / 2,
+        					y2 : rectHeight * 13 / 20,
+        					"stroke" : "black",
+        					"stroke-width" : 0.25
+        				})
+        				.attr("transform", "rotate("+(-1*45)+","+rectWidth/2+","+rectHeight / 2+")");
+
+        			break;
+        		case 12:
+        		var pts = " rectWidth/10, rectHeight/2 \
+        					rectWidth*3/10, rectHeight/2\
+        					rectWidth*3/10, rectHeight*4/10\
+        					rectWidth*5/10, rectHeight*4/10\
+        					rectWidth*5/10, rectHeight*3/10\
+        					rectWidth*7/10, rectHeight*3/10 " ;
+        			vis.append("svg")
+        				.attr("width", rectWidth)
+        				.attr("height", rectHeight)
+        				.attr("transform", "translate("+(padding+xScale(finalObj.dayNumberA))+","+(padding+yScale(finalObj.age))+")")
+        				.append("polyline")
+        				.attr({
+        					points : pts,
+        					"fill" : "none",
+        					"stroke" : "black",
+        					"stroke-width" : 0.25
+        				});
+        			break;
+        		case 13:
+        		var pts = " rectWidth/10, rectHeight/2 \
+        					rectWidth*3/10, rectHeight/2\
+        					rectWidth*3/10, rectHeight*4/10\
+        					rectWidth*5/10, rectHeight*4/10\
+        					rectWidth*5/10, rectHeight*3/10\
+        					rectWidth*7/10, rectHeight*3/10 " ;
+              
+        			vis.append("svg")
+        				.attr("width", rectWidth)
+        				.attr("height", rectHeight)
+        				.attr("transform", "translate("+(padding+xScale(finalObj.dayNumberA))+","+(padding+yScale(finalObj.age))+")")
+        				.append("polyline")
+        				.attr({
+        					points : pts,
+        					"fill" : "none",
+        					"stroke" : "black",
+        					"stroke-width" : 0.25
+        				})
+        				.attr("transform", "rotate("+45+","+rectWidth/10+","+rectHeight / 2+")");
+        			break;
+        		case 14:
+        			var pts = " rectWidth/10, rectHeight/2 \
+        					rectWidth*3/10, rectHeight/2\
+        					rectWidth*3/10, rectHeight*4/10\
+        					rectWidth*5/10, rectHeight*4/10\
+        					rectWidth*5/10, rectHeight*3/10\
+        					rectWidth*7/10, rectHeight*3/10 " ;
+              
+        			vis.append("svg")
+        				.attr("width", rectWidth)
+        				.attr("height", rectHeight)
+        				.attr("transform", "translate("+(padding+xScale(finalObj.dayNumberA))+","+(padding+yScale(finalObj.age))+")")
+        				.append("polyline")
+        				.attr({
+        					points : pts,
+        					"fill" : "none",
+        					"stroke" : "black",
+        					"stroke-width" : 0.25
+        				})
+        				.attr("transform", "rotate("+135+","+rectWidth/10+","+rectHeight / 2+")");
+        			break;
+        		case 15:
+        			var pts = " rectWidth/10, rectHeight/2 \
+        					rectWidth*3/10, rectHeight/2\
+        					rectWidth*3/10, rectHeight*4/10\
+        					rectWidth*5/10, rectHeight*4/10\
+        					rectWidth*5/10, rectHeight*3/10\
+        					rectWidth*7/10, rectHeight*3/10 " ;
+              
+        			vis.append("svg")
+        				.attr("width", rectWidth)
+        				.attr("height", rectHeight)
+        				.attr("transform", "translate("+(padding+xScale(finalObj.dayNumberA))+","+(padding+yScale(finalObj.age))+")")
+        				.append("polyline")
+        				.attr({
+        					points : pts,
+        					"fill" : "none",
+        					"stroke" : "black",
+        					"stroke-width" : 0.25
+        				})
+        				.attr("transform", "rotate("+90+","+rectWidth/10+","+rectHeight / 2+")");
+        			break;
+        		default:
+        			return "empty";
+        	}
+        }
+        for (var i = 0; i < finalObj.length; i++) {
+        	shapeType(Number(finalObj[i].symbolType), finalObj[i]);
+        }
+		});
+  	});
+  </script>
+  <!-- 1 circle -->
+  <svg width="50" height="100">
+      <circle cx="25" cy="50" r="4" fill="black" />
+      <text x="15" y="15" font-family="sans-serif" font-size="10px" fill="red">Sym1</text>
+  </svg>
+  <!-- 2 empty circle -->
+  <svg width="50" height="100">
+      <circle cx="25" cy="50" r="4" fill="none" stroke="black" stroke-width="2" />
+      <text x="15" y="15" font-family="sans-serif" font-size="10px" fill="red">Sym2</text>
+  </svg>
+  <!-- 3 Line -->
+  <svg width="50" height="100">
+      <line x1="5" y1="50" x2="45" y2="50" stroke="black" stroke-width="2"  />
+      <text x="15" y="15" font-family="sans-serif" font-size="10px" fill="red">Sym3</text>
+  </svg>
+  <!-- 4 Double Line -->
+  <svg width="50" height="100">
+      <line x1="5" y1="45" x2="45" y2="45" stroke="black" stroke-width="2"  />
+      <line x1="5" y1="55" x2="45" y2="55" stroke="black" stroke-width="2"  />
+      <text x="15" y="15" font-family="sans-serif" font-size="10px" fill="red">Sym4</text>
+  </svg>
+  
+  <!-- 5 Line 30 degrees-->
+  <svg width="50" height="100">
+      <line x1="5" y1="50" x2="40" y2="50" stroke="black" stroke-width="2" transform = "rotate(30, 5, 50)" />
+      <text x="15" y="15" font-family="sans-serif" font-size="10px" fill="red">Sym5</text>
+  </svg>
+  <!-- 6 Double Line 30 degrees -->
+  <svg width="50" height="100">
+      <line x1="5" y1="45" x2="40" y2="45" stroke="black" stroke-width="2" transform = "rotate(30, 5, 50)" />
+      <line x1="5" y1="55" x2="40" y2="55" stroke="black" stroke-width="2" transform = "rotate(30, 5, 50)" />
+      <text x="15" y="15" font-family="sans-serif" font-size="10px" fill="red">Sym6</text>
+  </svg>
+  
+  <!-- 7 Line 90 degrees-->
+  <svg width="50" height="100">
+      <line x1="25" y1="35" x2="25" y2="65" stroke="black" stroke-width="2"/>
+      <text x="15" y="15" font-family="sans-serif" font-size="10px" fill="red">Sym7</text>
+  </svg>
+  <!-- 8 Double Line 90 degrees -->
+  <svg width="50" height="100">
+      <line x1="20" y1="35" x2="20" y2="65" stroke="black" stroke-width="2"/>
+      <line x1="30" y1="35" x2="30" y2="65" stroke="black" stroke-width="2"/>
+      <text x="15" y="15" font-family="sans-serif" font-size="10px" fill="red">Sym8</text>
+  </svg>
+
+  <!-- 9 Line 60 degrees-->
+  <svg width="50" height="100">
+      <line x1="15" y1="50" x2="45" y2="50" stroke="black" stroke-width="2" transform = "rotate(-60, 40, 50)" />
+      <text x="15" y="15" font-family="sans-serif" font-size="10px" fill="red">Sym9</text>
+  </svg>
+  <!-- 10 Double Line 60 degrees -->
+  <svg width="50" height="100">
+      <line x1="15" y1="45" x2="45" y2="45" stroke="black" stroke-width="2" transform = "rotate(-60, 45, 50)" />
+      <line x1="15" y1="55" x2="45" y2="55" stroke="black" stroke-width="2" transform = "rotate(-60, 45, 50)" />
+      <text x="15" y="15" font-family="sans-serif" font-size="10px" fill="red">Sym10</text>
+  </svg>
+
+  <!-- 11 cross -->
+  <svg width="50" height="100">
+      <line x1="15" y1="50" x2="35" y2="50" stroke="black" stroke-width="2" 
+      transform = "rotate(45, 25, 50)"/>
+      <line x1="25" y1="40" x2="25" y2="60" stroke="black" stroke-width="2" 
+      transform = "rotate(45, 25, 50)"/>
+      <text x="15" y="15" font-family="sans-serif" font-size="10px" fill="red">Sym11</text>
+  </svg>
+
+  <!-- 12 double cross -->
+  <svg width="50" height="100">
+      <line x1="10" y1="45" x2="40" y2="45" stroke="black" stroke-width="2" transform = "rotate(-45, 25, 50)"/>
+      <line x1="10" y1="55" x2="40" y2="55" stroke="black" stroke-width="2" transform = "rotate(-45, 25, 50)"/>
+      <line x1="25" y1="35" x2="25" y2="65" stroke="black" stroke-width="2" transform = "rotate(-45, 25, 50)"/>
+      <text x="15" y="15" font-family="sans-serif" font-size="10px" fill="red">Sym12</text>
+  </svg>
+
+  <!-- 13 steps -->
+  <svg width="50" height="100">
+    <polyline fill="none" stroke="black" stroke-width="2"
+      points="05,50
+              15,50
+              15,40
+              25,40
+              25,30
+              35,30" />
+              <text x="15" y="15" font-family="sans-serif" font-size="10px" fill="red">Sym13</text>
+  </svg>
+
+  <!-- 14 steps 45 degrees -->
+  <svg width="50" height="100">
+    <polyline fill="none" stroke="black" stroke-width="2"
+      points="05,50
+              15,50
+              15,40
+              25,40
+              25,30
+              35,30"
+              transform = "rotate(45, 25, 50)" />
+              <text x="15" y="15" font-family="sans-serif" font-size="10px" fill="red">Sym14</text>
+  </svg>
+
+  <!-- 15 steps 135 degrees -->
+  <svg width="50" height="100">
+    <polyline fill="none" stroke="black" stroke-width="2"
+      points="05,50
+              15,50
+              15,40
+              25,40
+              25,30
+              35,30"
+              transform = "rotate(135, 25, 50)" />
+              <text x="15" y="15" font-family="sans-serif" font-size="10px" fill="red">Sym15</text>
+  </svg>
+
+  <!-- 16 steps 90 degrees -->
+  <svg width="50" height="100">
+    <polyline fill="none" stroke="black" stroke-width="2"
+      points="05,50
+              15,50
+              15,40
+              25,40
+              25,30
+              35,30"
+              transform = "rotate(90, 25, 50)" />
+              <text x="15" y="15" font-family="sans-serif" font-size="10px" fill="red">Sym16</text>
+  </svg>
+</body>
+
+
