@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<title>HomeWork4</title>
+	<link rel="stylesheet" href="patterns.css">
+	
+</head>
+
+<body>
+	<button onclick="myFunction()">Click me</button>
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+	<script>
+	var rotation = 0;
+	function myFunction() {
+		rotation += 45;
+    	var innerArrow = document.getElementById("rectid");
+    	innerArrow.setAttribute("transform", "rotate(" + rotation % 360 + " " + " 200 300 "+")");
+	} 
+	function cal_point(x, y, angle, x1, y1) {
+		angle = (angle * 180) / 3.14;
+		console.log(angle);
+		var newX = x1 + ( Math.cos(angle) * (x-x1) + Math.sin(angle) * (y -y1));
+ 		var newY = y1 + ( -Math.sin(angle) * (x-x1) + Math.cos(angle) * (y -y1));
+ 		return [newX, newY];
+	}
+//Make an SVG Container
+ var svgContainer = d3.select("body").append("svg")
+                                     .attr("width", 3000)
+                                     .attr("height", 2800);
+ 
+ //Draw the Rectangle
+ var width = 50, height = 100;
+ var x = 200, y = 200;
+ var rectangle = svgContainer.append("rect")
+ 							.attr("id", "rectid")
+ 							.style("fill", "url(#circles-6)")
+                            .attr("x", x)
+                            .attr("y", y)
+                            .attr("width", width)
+                            .attr("height", height)
+                            .attr("transform", "translate(0 0) rotate(0 " + " " + x + " " + (y + height)+" ) ");
+
+var rectangle1 = svgContainer.append("rect")
+							.style("fill", "url(#circles-6)")
+                            .attr("x", 200)
+                            .attr("y", 200)
+                            .attr("width", width)
+                            .attr("height", height)
+							.attr("transform", "translate(" +width+ " 0) rotate(60 " + " " + x + " " + (y + height)+" ) ");
+var rectangle = svgContainer.append("rect")
+                            .style("fill", "url(#circles-6)")
+                            .attr("x", 200)
+                            .attr("y", 200)
+                            .attr("width", width)
+                            .attr("height", height)
+                            .attr("transform", "translate(" +width*2+ " 0) rotate(120 " + " " + x + " " + (y + height)+" )  translate(50 0)");
+var rectangle2 = svgContainer.append("rect")
+                            .style("fill", "url(#circles-6)")
+                            .attr("x", 200)
+                            .attr("y", 200)
+                            .attr("width", width)
+                            .attr("height", height)
+                            .attr("transform", "translate(0 0) rotate(180 " + " " + x + " " + (y + height)+" )  translate(-50 " + (-1.732 * 50) + ")");
+
+var rectangle = svgContainer.append("rect")
+                            .style("fill", "url(#circles-6)")
+                            .attr("x", 200)
+                            .attr("y", 200)
+                            .attr("width", width)
+                            .attr("height", height)
+                            .attr("transform", "translate(" +(-width)+ " 0) rotate(-60 " + " " + (x+width) + " " + (y + height)+" ) ");
+var rectangle = svgContainer.append("rect")
+                            .style("fill", "url(#circles-6)")
+                            .attr("x", 200)
+                            .attr("y", 200)
+                            .attr("width", width)
+                            .attr("height", height)
+                            .attr("transform", "translate(" +(-width*2)+ " 0) rotate(-120 " + " " + (x+width) + " " + (y + height)+" )  translate(" +(-width)+ " 0)");
+
+    </script>
+
+<svg height="10" width="10" xmlns="http://www.w3.org/2000/svg" version="1.1"> <defs> <pattern id="circles-6" patternUnits="userSpaceOnUse" width="10" height="10"> <image xlink:href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSd3aGl0ZScgLz4KICA8Y2lyY2xlIGN4PSczLjUnIGN5PSczLjUnIHI9JzMuNScgZmlsbD0nYmxhY2snLz4KPC9zdmc+Cg==" x="0" y="0" width="10" height="10"> </image> </pattern> </defs> </svg>
+</body>

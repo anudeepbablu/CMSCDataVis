@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<title>Final Project</title>
+	<link rel="stylesheet" href="patterns.css">
+	<style>
+		.aParent div {
+  			float: left;
+  			clear: none; 
+		}
+		.aParent1 div {
+  			float: left;
+  			clear: none; 
+		}
+	</style>
+</head>
+
+<body>
+	<button onclick="myFunction()">Click me</button>
+	<div class="aParent">
+		<div>
+			<svg width="50" height="50">
+				<rect x="0" y="0" width="50" height="50" fill="url(#diagonal-stripe-3)" />
+			</svg>
+		</div>
+		<div> <p>2016</p> </div>
+	</div>
+	<div class="aParent" >
+		<div>
+			<svg width="50" height="50">
+				<rect x="0" y="0" width="50" height="50" fill="url(#circles-6)" />
+			</svg>
+		</div>
+		<div> <p>2016</p> </div>
+	</div>
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+	<script>
+	var rotation = 0;
+	function myFunction() {
+		rotation += 60;
+    	var innerArrow = document.getElementById("therapy");
+    	innerArrow.setAttribute("transform", "rotate(" + rotation % 360 + " " + (20+2*670+height) +" 630)");
+	} 
+		var w = 1400;
+		var h = 1400;
+		var margin = {top: 20, right: 150, bottom: 80, left: 150},
+			widthSVG = w - margin.right - margin.left,
+			heightSVG = h - margin.top - margin.bottom;
+		var width = widthSVG / 2,
+			height = heightSVG / 3;
+		
+		var color = d3.scale.category20c();
+		var svg1 = d3.select("body").append("svg")
+					    .attr("width", widthSVG * 6 + margin.left + margin.right)
+    					.attr("height", heightSVG * 6 + margin.top + margin.bottom);
+		
+
+    	
+		d3.csv("MFI_data.csv", function(data) {
+			d3.csv("2015MFI_Data.csv", function(data2015) {
+				
+				data.forEach(function(d) {
+					d.Eotaxin =+ d.Eotaxin;
+					d["G.CSF"] =+ d["G.CSF"];
+					d["GM.CSF"] =+ d["GM.CSF"];
+					d["IL.1a"] =+ d["IL.1a"];
+					d["IL.1b"] =+ d["IL.1b"];
+					d["IL.2"] =+ d["IL.2"];
+					d["IL.3"] =+ d["IL.3"];
+					d["IL.4"] =+ d["IL.4"];					
+					d["IL.5"] =+ d["IL.5"];
+					d["IL.6"] =+ d["IL.6"];
+					d["IL.7"] =+ d["IL.7"];
+					d["IL.9"] =+ d["IL.9"];
+					d["IL.10"] =+ d["IL.10"];
+					d["IL.12p40"] =+ d["IL.12p40"];
+					d["IL.12p70"] =+ d["IL.12p70"];	
+					d["IL.13"] =+ d["IL.13"];
+					d["IL.15"] =+ d["IL.15"];				
+					d["IL.17"] =+ d["IL.17"];
+					d.INFg =+ d.INFg;
+					d["IL.13"] =+ d["IL.13"];
+					d.KC =+ d.KC;
+					d.LIF =+ d.LIF;
+					d["M.CSF"] =+ d["M.CSF"];
+					d["MCP.1"] =+ d["MCP.1"];
+					d.MIG =+ d.MIG;
+					d.MIP2 =+ d.MIP2;
+					d["MIP.1a"] =+ d["MIP.1a"];
+					d["MIP.1b"] =+ d["MIP.1b"];
+					d.RANTES =+ d.RANTES;
+					d.TNFa =+ d.TNFa;
+					d.Tissue_Type =+ d.Tissue_Type;
+					d.Treatment = d.Treatment;
+					d.VEGF =+ d.VEGF;
+					d.mouse_sample =+ d.mouse_sample;
+				});
+
+				data2015.forEach(function(d) {
+					d.Eotaxin =+ d.Eotaxin;
+					d["G.CSF"] =+ d["G.CSF"];
+					d["GM.CSF"] =+ d["GM.CSF"];
+					d["IL.1a"] =+ d["IL.1a"];
+					d["IL.1b"] =+ d["IL.1b"];
+					d["IL.2"] =+ d["IL.2"];
+					d["IL.3"] =+ d["IL.3"];
+					d["IL.4"] =+ d["IL.4"];					
+					d["IL.5"] =+ d["IL.5"];
+					d["IL.6"] =+ d["IL.6"];
+					d["IL.7"] =+ d["IL.7"];
+					d["IL.9"] =+ d["IL.9"];
+					d["IL.10"] =+ d["IL.10"];
+					d["IL.12p40"] =+ d["IL.12p40"];
+					d["IL.12p70"] =+ d["IL.12p70"];	
+					d["IL.13"] =+ d["IL.13"];
+					d["IL.15"] =+ d["IL.15"];				
+					d["IL.17"] =+ d["IL.17"];
+					d.INFg =+ d.INFg;
+					d["IL.13"] =+ d["IL.13"];
+					d.KC =+ d.KC;
+					d.LIF =+ d.LIF;
+					d["M.CSF"] =+ d["M.CSF"];
+					d["MCP.1"] =+ d["MCP.1"];
+					d.MIG =+ d.MIG;
+					d.MIP2 =+ d.MIP2;
+					d["MIP.1a"] =+ d["MIP.1a"];
+					d["MIP.1b"] =+ d["MIP.1b"];
+					d.RANTES =+ d.RANTES;
+					d.TNFa =+ d.TNFa;
+					d.Tissue_Type =+ String(d.Tissue_Type);
+					d.Treatment = d.Treatment;
+					d.VEGF =+ d.VEGF;
+					d.mouse_sample =+ String(d.mouse_sample);
+				});
+
+				all_proteins = ["Eotaxin", "G.CSF", "GM.CSF", "IL.1a", "IL.1b",
+								 "IL.2", "IL.3", "IL.4", "IL.5", "IL.6", "IL.7",
+								 "IL.9", "IL.10", "IL.12p40", "IL.12p70", "IL.13",
+								 "IL.15", "IL.17", "INFg", "IL.13", "KC", "LIF",
+								 "M.CSF", "MCP.1", "MIG", "MIP2", "MIP.1a", "MIP.1b",
+								 "RANTES", "TNFa", "VEGF"]
+
+				therapy_list = ["AIP", "AIV", "IPV", "AIPV", "untreated", "APV"]
+				for (var e = 0; e < therapy_list.length; e++) {
+				
+				function t1(e, wid) {
+					if((e*60) < 180) {
+    					return e*wid;
+    				}
+    				else {
+    					return (e%3) * wid * -1;
+    				}  
+				}
+
+				function r1(e) {
+					if ((e*60) <= 180) {
+    					return e*60;
+    				}
+    				else {
+    					return 180 - e*60;
+    				}
+				}
+
+				function t2(e, wid) {
+					if ((e*60) == 120) {
+						return wid;
+					}
+					else if ((e*60) == 180) {
+						return -wid;
+					}
+					else if ((e*60) == 300) {
+						return -wid;
+					}
+					else {
+						return 0;
+					}
+				}
+
+				function t3(e, wid) {
+					if ((e*60) == 180) {
+						return -1.735 * wid;
+					}
+					else {
+						return 0;
+					}
+				}
+				
+				
+				var yDom = [];
+				var yDom2015 = [];
+				data.forEach(function(d) {
+					if (d.Treatment == therapy_list[e]) {
+						for(var k = 0; k < all_proteins.length; k++) {
+							yDom.push(Number(d[all_proteins[k]]));
+						}
+					}
+				});
+				var yDom1 = [];
+				var yDom2 = [];
+				var yDom3 = [];
+				var count = 0;
+				for (var i = 0; i < yDom.length; i++) {
+					if (count < yDom.length / 3) {
+						yDom1.push(yDom[i]);
+						count++;
+					}
+					else if((count < yDom.length * 2 / 3) && (count >= yDom.length / 3)) {
+						yDom2.push(yDom[i]);
+						count++;
+					}
+					else {
+						yDom3.push(yDom[i]);
+						count++;
+					}
+				}
+
+				data2015.forEach(function(d) {
+					if (d.Treatment == therapy_list[e]) {
+						for(var k = 0; k < all_proteins.length; k++) {
+							yDom2015.push(Number(d[all_proteins[k]]));
+						}
+					}
+				});
+				var yDom20151 = [];
+				var yDom20152 = [];
+				var yDom20153 = [];
+				var count2015 = 0;
+				for (var i = 0; i < yDom2015.length; i++) {
+					if (count2015 < yDom2015.length / 3) {
+						yDom20151.push(yDom2015[i]);
+						count2015++;
+					}
+					else if((count2015 < yDom2015.length * 2 / 3) && (count2015 >= yDom2015.length / 3)) {
+						yDom20152.push(yDom2015[i]);
+						count2015++;
+					}
+					else {
+						yDom20153.push(yDom2015[i]);
+						count2015++;
+					}
+				}
+
+				var yDomFinal = [];
+				for (var i = 0; i < yDom.length; i++) {
+					yDomFinal.push(yDom[i]);
+					yDomFinal.push(yDom2015[i]);
+				}
+				var wid = widthSVG /2 , hei = heightSVG;
+				var x = (20+2*670); var y = 1230;
+				console.log(wid);
+				console.log(hei);	
+  				var svg = svg1.append("g")
+  						.attr("id", "therapy")
+    					.attr("transform", "translate("+(20+2*670)+", 1230)")
+    					//.append("g")
+    					.attr("transform", "translate(" + t1(e, wid) + " 0) rotate("+ r1(e) + " " + x + " " + (y + hei)+" )  translate("+ t2(e, wid) +" " + t3(e, wid)  + ")")
+    					.attr("transform", "rotate("+ (-120+e*60) +" "+(20+2*670+height)+" "+1230+")");
+    					//.attr("transform", "translate("+(10+e*450)+", 20) rotate("+ (-120+e*60) +" "+(10+e*450)+" "+20+") translate("+0+", "+200+")");
+
+				var xScale = d3.scale.linear()
+						.domain([yDom.length, 0])
+						.range([width, 0]);
+
+				var max = d3.max(yDom);
+				var max2015 = d3.max(yDom2015);
+				if (max < max2015) {
+					max = max2015;
+				}
+				var yScale = d3.scale.linear()
+						.domain([0, max])
+						.range([0, height]);
+
+				var xAxis = d3.svg.axis()
+								.scale(xScale)
+								.ticks(0)
+								.orient("bottom");
+
+				//first svg box 2016
+				svg.append("g")
+	    			.attr("class", "x axis")
+	    			.attr("transform", "translate(0, " + height + " )")
+	    			.style({'stroke': 'Black', 'fill': 'none', 'stroke-width': '0.5px'})
+
+	    			.call(xAxis).selectAll("text").remove();
+	    		
+
+	    		svg.append("g")
+	    			.attr('id','bar1')
+					.selectAll('rect')
+					.data(yDom)
+					.enter()
+	    			.append("rect")
+	    			.style("fill", "url(#diagonal-stripe-3)")
+	    			.attr("x", function(d, i) {
+	    				return i * (width / yDom.length);
+	    			})
+	    			.attr("y", function(d) {
+	    				return height - yScale(d);
+	    			})
+	    			.attr("width", width / yDom.length - 0.5)
+	    			.attr("height", function(d) {
+	    				return yScale(d);
+	    			})
+	    			.attr("fill", "rgba(67, 67, 72, 0.5)")
+	    			.style("fill", "url(#circles-1) #fff");
+
+
+	    		//first svg box 2015
+				svg.append("g")
+	    			.attr("class", "x axis")
+	    			.attr("transform", "translate(0, " + height + " )")
+	    			.style({'stroke': 'Black', 'fill': 'none', 'stroke-width': '2px'})
+
+	    			.call(xAxis).selectAll("text").remove();
+	    		
+
+	    		svg.append("g")
+	    			.attr('id','bar1')
+					.selectAll('rect')
+					.data(yDom2015)
+					.enter()
+	    			.append("rect")
+	    			.style("fill", "url(#circles-6)")
+	    			.attr("x", function(d, i) {
+	    				return i * (width / yDom2015.length);
+	    			})
+	    			.attr("y", function(d) {
+	    				return height - yScale(d);
+	    			})
+	    			.attr("width", width / yDom2015.length - 0.5)
+	    			.attr("height", function(d) {
+	    				return yScale(d);
+	    			})
+	    			.attr("fill", "rgba(102, 102, 255, 0.5)");
+
+/*
+	    		//second svg box 2016
+	    		svg.append("g")
+	    			.attr("class", "x axis")
+	    			.attr("transform", "translate(0, " + (height+height) + " )")
+	    			.style({'stroke': 'Black', 'fill': 'none', 'stroke-width': '2px'})
+	    			
+	    			.call(xAxis).selectAll("text").remove();
+	    		
+
+	    		svg.append("g")
+	    			.attr('id','bar2')
+					.selectAll('rect')
+					.data(yDom2)
+					.enter()
+	    			.append("rect")
+	    			.style("fill", "url(#diagonal-stripe-3)")
+	    			.attr("x", function(d, i) {
+	    				return i * (width / yDom2.length);
+	    			})
+	    			.attr("y", function(d) {
+	    				return height*2 - yScale(d);
+	    			})
+	    			.attr("width", width / yDom2.length - 0.5)
+	    			.attr("height", function(d) {
+	    				return yScale(d);
+	    			})
+	    			.attr("fill", "rgba(67, 67, 72, 0.5)");
+
+	    		//second svg box 2015
+	    		svg.append("g")
+	    			.attr("class", "x axis")
+	    			.attr("transform", "translate(0, " + (height+height) + " )")
+	    			.style({'stroke': 'Black', 'fill': 'none', 'stroke-width': '2px'})
+	    			
+	    			.call(xAxis).selectAll("text").remove();
+	    		
+
+	    		svg.append("g")
+	    			.attr('id','bar2')
+					.selectAll('rect')
+					.data(yDom20152)
+					.enter()
+	    			.append("rect")
+	    			.style("fill", "url(#circles-6)")
+	    			.attr("x", function(d, i) {
+	    				return i * (width / yDom20152.length);
+	    			})
+	    			.attr("y", function(d) {
+	    				return height*2 - yScale(d);
+	    			})
+	    			.attr("width", width / yDom20152.length - 0.5)
+	    			.attr("height", function(d) {
+	    				return yScale(d);
+	    			})
+	    			.attr("fill", "rgba(102, 102, 255, 0.5)");
+
+
+	    		//third svg box 2016
+	    		svg.append("g")
+	    			.attr("class", "x axis")
+	    			.attr("transform", "translate(0, " + (height+height+height) + " )")
+	    			.style({'stroke': 'Black', 'fill': 'none', 'stroke-width': '2px'})
+	    			
+	    			.call(xAxis).selectAll("text").remove();
+	    		
+
+	    		svg.append("g")
+	    			.attr('id','bar3')
+					.selectAll('rect')
+					.data(yDom3)
+					.enter()
+	    			.append("rect")
+	    			.style("fill", "url(#diagonal-stripe-3)")
+	    			.attr("x", function(d, i) {
+	    				return i * (width / yDom3.length);
+	    			})
+	    			.attr("y", function(d) {
+	    				return height*3 - yScale(d);
+	    			})
+	    			.attr("width", width / yDom3.length - 0.5)
+	    			.attr("height", function(d) {
+	    				return yScale(d);
+	    			})
+	    			.attr("fill", "rgba(67, 67, 72, 0.5)");
+
+	    		//third svg box 2015
+	    		svg.append("g")
+	    			.attr("class", "x axis")
+	    			.attr("transform", "translate(0, " + (height+height+height) + " )")
+	    			.style({'stroke': 'Black', 'fill': 'none', 'stroke-width': '2px'})
+	    			
+	    			.call(xAxis).selectAll("text").remove();
+	    		
+
+	    		svg.append("g")
+	    			.attr('id','bar3')
+					.selectAll('rect')
+					.data(yDom20153)
+					.enter()
+	    			.append("rect")
+	    			.style("fill", "url(#circles-6)")
+	    			.attr("x", function(d, i) {
+	    				return i * (width / yDom20153.length);
+	    			})
+	    			.attr("y", function(d) {
+	    				return height*3 - yScale(d);
+	    			})
+	    			.attr("width", width / yDom20153.length - 0.5)
+	    			.attr("height", function(d) {
+	    				return yScale(d);
+	    			})
+	    			.attr("fill", "rgba(102, 102, 255, 0.5)");*/
+
+	    		}
+			});
+});
+
+	</script>
+	<svg height="1" width="1" xmlns="http://www.w3.org/2000/svg" version="1.1"> <defs> <pattern id="circles-6" patternUnits="userSpaceOnUse" width="1" height="1"> <image xlink:href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSd3aGl0ZScgLz4KICA8Y2lyY2xlIGN4PSczLjUnIGN5PSczLjUnIHI9JzMuNScgZmlsbD0nYmxhY2snLz4KPC9zdmc+Cg==" x="0" y="0" width="1" height="1"> </image> </pattern> </defs> </svg>
+	<svg height="1" width="1" xmlns="http://www.w3.org/2000/svg" version="1.1"> <defs> <pattern id="diagonal-stripe-3" patternUnits="userSpaceOnUse" width="1" height="1"> <image xlink:href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSd3aGl0ZScvPgogIDxwYXRoIGQ9J00tMSwxIGwyLC0yCiAgICAgICAgICAgTTAsMTAgbDEwLC0xMAogICAgICAgICAgIE05LDExIGwyLC0yJyBzdHJva2U9J2JsYWNrJyBzdHJva2Utd2lkdGg9JzMnLz4KPC9zdmc+" x="0" y="0" width="1" height="1"> </image> </pattern> </defs> </svg>
+</body>
+</html>

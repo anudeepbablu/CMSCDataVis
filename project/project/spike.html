@@ -3,29 +3,37 @@
 <html>
 
 <head>
-	<title>HomeWork4</title>
+	<title>Project</title>
 
 </head>
 
 <body>
+	<button onclick="myFunction()">Click me</button>
 	<script src="https://d3js.org/d3.v3.min.js"></script>
 	<script>
+	var rotation = 0;
+	function myFunction() {
+		rotation += 60;
+    	var innerArrow = document.getElementById("therapy");
+    	innerArrow.setAttribute("transform", "rotate(" + rotation % 360 + " " + (20+2*670+height) +" 630)");
+	} 
 		var w = window.innerWidth;
 		var h = window.innerHeight;
 		var margin = {top: 20, right: 150, bottom: 80, left: 150},
-			width = w - margin.right - margin.left,
-			height = h - margin.top - margin.bottom;
+			widthSVG = w - margin.right - margin.left,
+			heightSVG = h - margin.top - margin.bottom;
+		var width = widthSVG / 2,
+			height = heightSVG / 3;
 		
 		var color = d3.scale.category20c();
+		var svg1 = d3.select("body").append("svg")
+					    .attr("width", widthSVG * 6 + margin.left + margin.right)
+    					.attr("height", heightSVG * 6 + margin.top + margin.bottom);
 		
-		var svg = d3.select("body").append("svg")
-					    .attr("width", width + margin.left + margin.right)
-    					.attr("height", height + margin.top + margin.bottom)
-  						.append("g")
-    					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-		d3.csv("2016data.csv", function(data) {
-			d3.csv("2015data.csv", function(data2015) {
+    	
+		d3.csv("MFI_data.csv", function(data) {
+			d3.csv("2015MFI_Data.csv", function(data2015) {
 				
 				data.forEach(function(d) {
 					d.Eotaxin =+ d.Eotaxin;
@@ -34,7 +42,7 @@
 					d["IL.1a"] =+ d["IL.1a"];
 					d["IL.1b"] =+ d["IL.1b"];
 					d["IL.2"] =+ d["IL.2"];
-					d["IL.3"] =+ d["IL.2"];
+					d["IL.3"] =+ d["IL.3"];
 					d["IL.4"] =+ d["IL.4"];					
 					d["IL.5"] =+ d["IL.5"];
 					d["IL.6"] =+ d["IL.6"];
@@ -71,7 +79,7 @@
 					d["IL.1a"] =+ d["IL.1a"];
 					d["IL.1b"] =+ d["IL.1b"];
 					d["IL.2"] =+ d["IL.2"];
-					d["IL.3"] =+ d["IL.2"];
+					d["IL.3"] =+ d["IL.3"];
 					d["IL.4"] =+ d["IL.4"];					
 					d["IL.5"] =+ d["IL.5"];
 					d["IL.6"] =+ d["IL.6"];
@@ -100,56 +108,296 @@
 					d.VEGF =+ d.VEGF;
 					d.mouse_sample =+ String(d.mouse_sample);
 				});
-				console.log(data);
+
+				all_proteins = ["Eotaxin", "G.CSF", "GM.CSF", "IL.1a", "IL.1b",
+								 "IL.2", "IL.3", "IL.4", "IL.5", "IL.6", "IL.7",
+								 "IL.9", "IL.10", "IL.12p40", "IL.12p70", "IL.13",
+								 "IL.15", "IL.17", "INFg", "IL.13", "KC", "LIF",
+								 "M.CSF", "MCP.1", "MIG", "MIP2", "MIP.1a", "MIP.1b",
+								 "RANTES", "TNFa", "VEGF"]
+
+				therapy_list = ["AIP", "AIV", "IPV", "AIPV", "untreated", "APV"]
+				for (var e = 0; e < therapy_list.length; e++) {
+					
+  				var svg = svg1.append("g")
+  						.attr("id", "therapy")
+    					.attr("transform", "translate("+(20+e*670)+", 630)");
+    					//.append("g")
+    					//.attr("transform", "rotate("+ (-120+e*60) +" "+(20+2*670+height)+" "+630+")");
+    					//.attr("transform", "translate("+(10+e*450)+", 20) rotate("+ (-120+e*60) +" "+(10+e*450)+" "+20+") translate("+0+", "+200+")");
 				var yDom = [];
 				var yDom2015 = [];
 				data.forEach(function(d) {
-					if (d.Treatment == "AIP") {
-						yDom.push(d["IL.1a"]); 
+					if (d.Treatment == therapy_list[e]) {
+						for(var k = 0; k < all_proteins.length; k++) {
+							yDom.push(Number(d[all_proteins[k]]));
+						}
 					}
 				});
+				var yDom1 = [];
+				var yDom2 = [];
+				var yDom3 = [];
+				var count = 0;
+				for (var i = 0; i < yDom.length; i++) {
+					if (count < yDom.length / 3) {
+						yDom1.push(yDom[i]);
+						count++;
+					}
+					else if((count < yDom.length * 2 / 3) && (count >= yDom.length / 3)) {
+						yDom2.push(yDom[i]);
+						count++;
+					}
+					else {
+						yDom3.push(yDom[i]);
+						count++;
+					}
+				}
+
 				data2015.forEach(function(d) {
-					if (d.Treatment == "AIP") {
-						yDom2015.push(d["IL.1a"]); 
+					if (d.Treatment == therapy_list[e]) {
+						for(var k = 0; k < all_proteins.length; k++) {
+							yDom2015.push(Number(d[all_proteins[k]]));
+						}
 					}
 				});
+				var yDom20151 = [];
+				var yDom20152 = [];
+				var yDom20153 = [];
+				var count2015 = 0;
+				for (var i = 0; i < yDom2015.length; i++) {
+					if (count2015 < yDom2015.length / 3) {
+						yDom20151.push(yDom2015[i]);
+						count2015++;
+					}
+					else if((count2015 < yDom2015.length * 2 / 3) && (count2015 >= yDom2015.length / 3)) {
+						yDom20152.push(yDom2015[i]);
+						count2015++;
+					}
+					else {
+						yDom20153.push(yDom2015[i]);
+						count2015++;
+					}
+				}
 
+				var yDomFinal = [];
+				for (var i = 0; i < yDom.length; i++) {
+					yDomFinal.push(yDom[i]);
+					yDomFinal.push(yDom2015[i]);
+				}
+
+				var xScale = d3.scale.linear()
+						.domain([yDom.length, 0])
+						.range([width, 0]);
+
+				var max = d3.max(yDom);
+				var max2015 = d3.max(yDom2015);
+				if (max < max2015) {
+					max = max2015;
+				}
 				var yScale = d3.scale.linear()
-						.domain([0, yDom.length])
+						.domain([0, max])
 						.range([0, height]);
-				var yAxis = d3.svg.axis()
-								.scale(yScale)
-								.orient("left");
 
+				var xAxis = d3.svg.axis()
+								.scale(xScale)
+								.ticks(0)
+								.orient("bottom");
+
+				//first svg box 2016
 				svg.append("g")
-	    			.attr("class", "y axis")
-	    			.attr("transform", "translate(" + width/2 + ",0)")
-	    			.call(yAxis);
-	    		
-	    		var chart = svg.append('g')
-							.attr("transform", "translate("+width/2+",0)")
-							.attr('id','bars')
-							.selectAll('rect')
-							.data(yDom)
-							.enter()
-							.append('rect')
-							.attr('height',15)
-							.attr({'x':0,'y':function(d,i){ return yScale(i); }})
-							.attr('width',function(d, i){ return yDom[i] % 200; })
-							.style('fill', function(d, i) { return color(i%20); });
-				var chart1 = svg.append('g')
-							.attr("transform", "translate(0,0)")
-							.attr('id','bars')
-							.selectAll('rect')
-							.data(yDom2015)
-							.enter()
-							.append('rect')
-							.attr('height',15)
-							.attr({'x':0,'y':function(d,i){ return yScale(i); }})
-							.attr('width',function(d, i){ return yDom2015[i] % 200; })
-							.style('fill', function(d, i) { return color(i%20); })
-							.attr("transform", function(d,i){ return "translate(" + Number((width/2)-(yDom2015[i] % 200) - 6)  + ", 0)" });
+	    			.attr("class", "x axis")
+	    			.attr("transform", "translate(0, " + height + " )")
+	    			.style({'stroke': 'Black', 'fill': 'none', 'stroke-width': '2px'})
 
+	    			.call(xAxis).selectAll("text").remove();
+	    		
+
+	    		svg.append("g")
+	    			.attr('id','bar1')
+					.selectAll('rect')
+					.data(yDom1)
+					.enter()
+	    			.append("rect")
+	    			.attr("x", function(d, i) {
+	    				return i * (width / yDom1.length);
+	    			})
+	    			.attr("y", function(d) {
+	    				return height - yScale(d);
+	    			})
+	    			.attr("width", width / yDom1.length - 0.5)
+	    			.attr("height", function(d) {
+	    				return yScale(d);
+	    			})
+	    			.attr("fill", "rgba(67, 67, 72, 0.5)");
+
+
+	    		//first svg box 2015
+				svg.append("g")
+	    			.attr("class", "x axis")
+	    			.attr("transform", "translate(0, " + height + " )")
+	    			.style({'stroke': 'Black', 'fill': 'none', 'stroke-width': '2px'})
+
+	    			.call(xAxis).selectAll("text").remove();
+	    		
+
+	    		svg.append("g")
+	    			.attr('id','bar1')
+					.selectAll('rect')
+					.data(yDom20151)
+					.enter()
+	    			.append("rect")
+	    			.attr("x", function(d, i) {
+	    				return i * (width / yDom20151.length);
+	    			})
+	    			.attr("y", function(d) {
+	    				return height - yScale(d);
+	    			})
+	    			.attr("width", width / yDom20151.length - 0.5)
+	    			.attr("height", function(d) {
+	    				return yScale(d);
+	    			})
+	    			.attr("fill", "rgba(67, 67, 72, 0.5)");
+
+
+	    		//second svg box 2016
+	    		svg.append("g")
+	    			.attr("class", "x axis")
+	    			.attr("transform", "translate(0, " + (height+height) + " )")
+	    			.style({'stroke': 'Black', 'fill': 'none', 'stroke-width': '2px'})
+	    			
+	    			.call(xAxis).selectAll("text").remove();
+	    		
+
+	    		svg.append("g")
+	    			.attr('id','bar2')
+					.selectAll('rect')
+					.data(yDom2)
+					.enter()
+	    			.append("rect")
+	    			.attr("x", function(d, i) {
+	    				return i * (width / yDom2.length);
+	    			})
+	    			.attr("y", function(d) {
+	    				return height*2 - yScale(d);
+	    			})
+	    			.attr("width", width / yDom2.length - 0.5)
+	    			.attr("height", function(d) {
+	    				return yScale(d);
+	    			})
+	    			.attr("fill", "rgba(67, 67, 72, 0.5)");
+
+	    		//second svg box 2015
+	    		svg.append("g")
+	    			.attr("class", "x axis")
+	    			.attr("transform", "translate(0, " + (height+height) + " )")
+	    			.style({'stroke': 'Black', 'fill': 'none', 'stroke-width': '2px'})
+	    			
+	    			.call(xAxis).selectAll("text").remove();
+	    		
+
+	    		svg.append("g")
+	    			.attr('id','bar2')
+					.selectAll('rect')
+					.data(yDom20152)
+					.enter()
+	    			.append("rect")
+	    			.attr("x", function(d, i) {
+	    				return i * (width / yDom20152.length);
+	    			})
+	    			.attr("y", function(d) {
+	    				return height*2 - yScale(d);
+	    			})
+	    			.attr("width", width / yDom20152.length - 0.5)
+	    			.attr("height", function(d) {
+	    				return yScale(d);
+	    			})
+	    			.attr("fill", "rgba(67, 67, 72, 0.5)");
+
+
+	    		//third svg box 2016
+	    		svg.append("g")
+	    			.attr("class", "x axis")
+	    			.attr("transform", "translate(0, " + (height+height+height) + " )")
+	    			.style({'stroke': 'Black', 'fill': 'none', 'stroke-width': '2px'})
+	    			
+	    			.call(xAxis).selectAll("text").remove();
+	    		
+
+	    		svg.append("g")
+	    			.attr('id','bar3')
+					.selectAll('rect')
+					.data(yDom3)
+					.enter()
+	    			.append("rect")
+	    			.attr("x", function(d, i) {
+	    				return i * (width / yDom3.length);
+	    			})
+	    			.attr("y", function(d) {
+	    				return height*3 - yScale(d);
+	    			})
+	    			.attr("width", width / yDom3.length - 0.5)
+	    			.attr("height", function(d) {
+	    				return yScale(d);
+	    			})
+	    			.attr("fill", "rgba(67, 67, 72, 0.5)");
+
+	    		//third svg box 2015
+	    		svg.append("g")
+	    			.attr("class", "x axis")
+	    			.attr("transform", "translate(0, " + (height+height+height) + " )")
+	    			.style({'stroke': 'Black', 'fill': 'none', 'stroke-width': '2px'})
+	    			
+	    			.call(xAxis).selectAll("text").remove();
+	    		
+
+	    		svg.append("g")
+	    			.attr('id','bar3')
+					.selectAll('rect')
+					.data(yDom20153)
+					.enter()
+	    			.append("rect")
+	    			.attr("x", function(d, i) {
+	    				return i * (width / yDom20153.length);
+	    			})
+	    			.attr("y", function(d) {
+	    				return height*3 - yScale(d);
+	    			})
+	    			.attr("width", width / yDom20153.length - 0.5)
+	    			.attr("height", function(d) {
+	    				return yScale(d);
+	    			})
+	    			.attr("fill", "rgba(67, 67, 72, 0.5)");
+
+	    		}
+	    		
+
+	    		//first bar
+	    		/*var chart = svg.append('g')
+							//.attr("transform", "translate(0, " + height +")")
+							.attr('id','bar1')
+							.selectAll('rect')
+							.data(yDomFinal)
+							.enter()
+							.append('rect')
+							.attr('width',5)
+							.attr({'y':0,'x':function(d,i){ return Number(height-yScale(i));}})
+							.attr('height',function(d, i){ return (yDomFinal[i] % 200); })
+							.style('fill', "rgba(0, 128, 0, 0.5)")
+							.attr("transform", function(d,i){ return "translate(-7,+" + Number((height)-(yDomFinal[i] % 200))  + ")" ;});
+
+				//second bar
+				var chart = svg.append('g')
+							//.attr("transform", "translate(0, " + height +")")
+							.attr('id','bar2')
+							.selectAll('rect')
+							.data(yDomFinal)
+							.enter()
+							.append('rect')
+							.attr('width', 10)
+							.attr({'y':0,'x':function(d,i){ return Number(height-yScale(i));}})
+							.attr('height',function(d, i){ return (yDomFinal[i] % 200); })
+							.style('fill', "rgba(67, 67, 72, 0.5)")
+							.attr("transform", function(d,i){ return "translate(-7,+" + Number((height)-(yDomFinal[i] % 200))  + ")" ;});*/
 			});
 			
 			
